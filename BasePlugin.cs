@@ -1,12 +1,16 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
+using PatchedAndLatched.Patches;
 using SmallChanges.Patches;
+using System.Collections.Generic;
+using System.Reflection;
+using UnityEngine;
 
-namespace SmallChanges
+namespace PatchedAndLatched
 {
-    [BepInPlugin("blitzo.baldiplus.smallchanges", "Small Changes", "1.0.0")]
-    public class SmallChangesPlugin : BaseUnityPlugin
+    [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "1.0.0")]
+    public class PatchedAndLatchedPlugin : BaseUnityPlugin
     {
         public static ConfigEntry<bool> CutGrapplingHook = null!;
         public static ConfigEntry<bool> ColoredActivities = null!;
@@ -18,6 +22,11 @@ namespace SmallChanges
         public static ConfigEntry<bool> NoPrincipalFacultyKnock = null!;
         public static ConfigEntry<bool> OldConveyorBelt = null!;
         public static ConfigEntry<bool> NametagForFieldTrip = null!;
+        public static ConfigEntry<bool> OnlyBaldiEveryFloor = null!;
+        public static ConfigEntry<bool> SchoolHouseEscape = null!;
+        public static ConfigEntry<bool> NoTransparentMap = null!;
+        public static ConfigEntry<bool> BootsSnapRope = null!;
+
 
         private void Awake()
         {
@@ -25,13 +34,18 @@ namespace SmallChanges
             RunningInRooms = Config.Bind("Gameplay", "RunningInRooms", true, "Principal doesn't detention for running in rooms");
             PointsBonus = Config.Bind("Gameplay", "PointsBonus", true, "Every 30 points gives +5 bonus points");
             ReplaceDietBSODA = Config.Bind("Gameplay", "ReplaceDietBSODA", true, "Regular BSODA completely replaces diet BSODA");
-            ClassicArtsAndCrafters = Config.Bind("Gameplay", "ClassicArtsAndCrafters", true, "ArtsAndCrafters no longer spinning, instant teleport on touch");
+            ClassicArtsAndCrafters = Config.Bind("Gameplay", "ClassicArtsAndCrafters", true, "Classic ArtsAndCrafters: no spinning, instant teleport on touch");
             NoPrincipalFacultyKnock = Config.Bind("Gameplay", "NoPrincipalFacultyKnock", true, "Principal doesn't knock on faculty doors, just opens them");
-            OldConveyorBelt = Config.Bind("Gameplay", "OldConveyorBelt", true, "Old conveyor belt speed");
+            OldConveyorBelt = Config.Bind("Gameplay", "OldConveyorBelt", true, "Old conveyor belt speed (12.5 instead of 25)");
             NametagForFieldTrip = Config.Bind("Gameplay", "NametagForFieldTrip", true, "You can use nametag to field trip");
+            OnlyBaldiEveryFloor = Config.Bind("Gameplay", "OnlyBaldiEveryFloor", true, "Only Baldi spawns on every floor (no other NPCs)");
+            SchoolHouseEscape = Config.Bind("Gameplay", "SchoolHouseEscape", true, "Play SchoolHouse Escape music when all notebooks are collected");
+            NoTransparentMap = Config.Bind("Gameplay", "NoTransparentMap", true, "Remove transparent/fog from the map");
+            BootsSnapRope = Config.Bind("Gameplay", "BootsSnapRope", true, "Boots snap the jump rope");
 
             StaminaOnPoints = Config.Bind("Stamina", "StaminaOnPoints", true, "Restore stamina when getting points (1 point = 1%)");
             ColoredActivities = Config.Bind("Visuals", "ColoredActivities", true, "Colored balloons in activities (makes activities easy)");
+     
 
             if (CutGrapplingHook.Value) Harmony.CreateAndPatchAll(typeof(GrapplingHookCutPatch));
             if (ColoredActivities.Value)
@@ -54,20 +68,24 @@ namespace SmallChanges
                 Harmony.CreateAndPatchAll(typeof(ArtsAndCraftersPatch));
                 Harmony.CreateAndPatchAll(typeof(ArtsAndCraftersReadyPatch));
             }
-            if (NoPrincipalFacultyKnock.Value)
-            {
-                Harmony.CreateAndPatchAll(typeof(PrincipalNoFacultyKnockPatch));
-            }
-            if (OldConveyorBelt.Value)
-            {
-                Harmony.CreateAndPatchAll(typeof(ConveyorBeltSpeedPatch));
-            }
+            if (NoPrincipalFacultyKnock.Value) Harmony.CreateAndPatchAll(typeof(PrincipalNoFacultyKnockPatch));
+            if (OldConveyorBelt.Value) Harmony.CreateAndPatchAll(typeof(ConveyorBeltSpeedPatch));
             if (NametagForFieldTrip.Value)
             {
                 Harmony.CreateAndPatchAll(typeof(Patch_StartFieldTrip));
                 Harmony.CreateAndPatchAll(typeof(Patch_FieldTripStartMinigame));
                 Harmony.CreateAndPatchAll(typeof(Patch_EndMinigame));
             }
+            if (OnlyBaldiEveryFloor.Value)
+            {
+                Harmony.CreateAndPatchAll(typeof(OnlyBaldiEveryFloorPatch));
+                Harmony.CreateAndPatchAll(typeof(AddNpcsFromPreviousLevelsPatch));
+                Harmony.CreateAndPatchAll(typeof(EnvironmentControllerPatch));
+                Harmony.CreateAndPatchAll(typeof(OnlyBaldiTimeOutPatch));
+            }
+            if (SchoolHouseEscape.Value) Harmony.CreateAndPatchAll(typeof(SchoolHouseEscapePatch));
+            if (NoTransparentMap.Value) Harmony.CreateAndPatchAll(typeof(NoTransparentMapPatch));
+            if (BootsSnapRope.Value) Harmony.CreateAndPatchAll(typeof(BootsSnapRopePatch));
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using System.Reflection;
+using PatchedAndLatched;
 
 namespace SmallChanges.Patches
 {
-    // Отключаем кружение вокруг игрока при касании
     [HarmonyPatch(typeof(ArtsAndCrafters_Chasing))]
     public static class ArtsAndCraftersChasingPatch
     {
@@ -12,11 +12,10 @@ namespace SmallChanges.Patches
         [HarmonyPatch("OnStateTriggerEnter")]
         public static bool OnStateTriggerEnter_Prefix(ArtsAndCrafters_Chasing __instance, Entity otherEntity, Collider other, bool validCollision)
         {
-            if (!SmallChangesPlugin.ClassicArtsAndCrafters.Value) return true;
+            if (!PatchedAndLatchedPlugin.ClassicArtsAndCrafters.Value) return true;
 
             if (other.CompareTag("Player"))
             {
-                // Получаем crafters через рефлексию
                 var craftersField = typeof(ArtsAndCrafters_Chasing).GetField("crafters",
                     BindingFlags.NonPublic | BindingFlags.Instance);
                 var playerField = typeof(ArtsAndCrafters_Chasing).GetField("player",
@@ -31,9 +30,8 @@ namespace SmallChanges.Patches
                     {
                         if (validCollision)
                         {
-                            // Вместо кружения - сразу телепортируем
                             crafters.TeleportPlayer(player);
-                            return false; // Пропускаем оригинальный метод
+                            return false;
                         }
                         else
                         {
@@ -47,7 +45,6 @@ namespace SmallChanges.Patches
         }
     }
 
-    // Уменьшаем время до телепорта до 0.5 секунды
     [HarmonyPatch(typeof(ArtsAndCrafters_Teleporting))]
     public static class ArtsAndCraftersTeleportingPatch
     {
@@ -55,9 +52,8 @@ namespace SmallChanges.Patches
         [HarmonyPatch("Update")]
         public static void Update_Prefix(ArtsAndCrafters_Teleporting __instance)
         {
-            if (!SmallChangesPlugin.ClassicArtsAndCrafters.Value) return;
+            if (!PatchedAndLatchedPlugin.ClassicArtsAndCrafters.Value) return;
 
-            // Уменьшаем время телепортации до 0.5 секунды
             var timeField = typeof(ArtsAndCrafters_Teleporting).GetField("time",
                 BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -72,7 +68,6 @@ namespace SmallChanges.Patches
         }
     }
 
-    // Уменьшаем время преследования
     [HarmonyPatch(typeof(ArtsAndCrafters))]
     public static class ArtsAndCraftersPatch
     {
@@ -80,9 +75,8 @@ namespace SmallChanges.Patches
         [HarmonyPatch("Initialize")]
         public static void Initialize_Postfix(ArtsAndCrafters __instance)
         {
-            if (!SmallChangesPlugin.ClassicArtsAndCrafters.Value) return;
+            if (!PatchedAndLatchedPlugin.ClassicArtsAndCrafters.Value) return;
 
-            // Устанавливаем минимальное время преследования
             var runTimeField = typeof(ArtsAndCrafters).GetField("runTime",
                 BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -93,7 +87,6 @@ namespace SmallChanges.Patches
         }
     }
 
-    // Ускоряем переход в Stalking
     [HarmonyPatch(typeof(ArtsAndCrafters_Ready))]
     public static class ArtsAndCraftersReadyPatch
     {
@@ -101,7 +94,7 @@ namespace SmallChanges.Patches
         [HarmonyPatch("Update")]
         public static void Update_Prefix(ArtsAndCrafters_Ready __instance)
         {
-            if (!SmallChangesPlugin.ClassicArtsAndCrafters.Value) return;
+            if (!PatchedAndLatchedPlugin.ClassicArtsAndCrafters.Value) return;
 
             var timeField = typeof(ArtsAndCrafters_Ready).GetField("time",
                 BindingFlags.NonPublic | BindingFlags.Instance);

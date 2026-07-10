@@ -1,4 +1,5 @@
 using HarmonyLib;
+using PatchedAndLatched;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace SmallChanges.Patches
     {
         static bool Prefix(FieldTripEntranceRoomFunction __instance, PlayerManager player, ref bool ___unlocked)
         {
-            if (!SmallChangesPlugin.NametagForFieldTrip.Value) return true;
+            if (!PatchedAndLatchedPlugin.NametagForFieldTrip.Value) return true;
 
             if (player.itm.Has(Items.BusPass) || ___unlocked)
             {
@@ -40,7 +41,7 @@ namespace SmallChanges.Patches
     {
         static void Prefix(FieldTripBaseRoomFunction __instance, ref float ___itemLimit, List<Pickup> ___pickups)
         {
-            if (!SmallChangesPlugin.NametagForFieldTrip.Value) return;
+            if (!PatchedAndLatchedPlugin.NametagForFieldTrip.Value) return;
             if (!FieldTripNametagState.UsedNametag) return;
 
             ___itemLimit = 1f;
@@ -100,7 +101,7 @@ namespace SmallChanges.Patches
     {
         static void Postfix(bool finished)
         {
-            if (!SmallChangesPlugin.NametagForFieldTrip.Value) return;
+            if (!PatchedAndLatchedPlugin.NametagForFieldTrip.Value) return;
 
             if (finished)
             {

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PatchedAndLatched;
 using UnityEngine;
 
 namespace SmallChanges.Patches
@@ -10,7 +11,7 @@ namespace SmallChanges.Patches
         [HarmonyPatch("FacultyDoorHit")]
         public static bool FacultyDoorHit_Prefix(Principal __instance, StandardDoor door, Cell otherSide)
         {
-            if (!SmallChangesPlugin.NoPrincipalFacultyKnock.Value) return true;
+            if (!PatchedAndLatchedPlugin.NoPrincipalFacultyKnock.Value) return true;
 
             door.OpenTimedWithKey(door.DefaultTime, makeNoise: false);
             return false; 
@@ -19,7 +20,7 @@ namespace SmallChanges.Patches
         [HarmonyPatch("KnockOnDoor")]
         public static bool KnockOnDoor_Prefix(Principal __instance, StandardDoor door, Cell otherSide)
         {
-            if (!SmallChangesPlugin.NoPrincipalFacultyKnock.Value) return true;
+            if (!PatchedAndLatchedPlugin.NoPrincipalFacultyKnock.Value) return true;
 
             door.OpenTimedWithKey(door.DefaultTime, makeNoise: false);
             return false; 

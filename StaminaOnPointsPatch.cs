@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PatchedAndLatched;
 using UnityEngine;
 
 namespace SmallChanges.Patches
@@ -10,7 +11,7 @@ namespace SmallChanges.Patches
         [HarmonyPatch("AddPoints", new[] { typeof(int), typeof(int), typeof(bool), typeof(bool), typeof(bool) })]
         public static void AddPoints_Postfix(int points, int player, bool playAnimation, bool includeInLevelTotal, bool multiply)
         {
-            if (!SmallChangesPlugin.StaminaOnPoints.Value) return;
+            if (!PatchedAndLatchedPlugin.StaminaOnPoints.Value) return;
             if (points <= 0) return;
 
             PlayerManager pm = Singleton<CoreGameManager>.Instance.GetPlayer(player);
