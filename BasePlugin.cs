@@ -34,14 +34,14 @@ namespace PatchedAndLatched
             RunningInRooms = Config.Bind("Gameplay", "RunningInRooms", true, "Principal doesn't detention for running in rooms");
             PointsBonus = Config.Bind("Gameplay", "PointsBonus", true, "Every 30 points gives +5 bonus points");
             ReplaceDietBSODA = Config.Bind("Gameplay", "ReplaceDietBSODA", true, "Regular BSODA completely replaces diet BSODA");
-            ClassicArtsAndCrafters = Config.Bind("Gameplay", "ClassicArtsAndCrafters", true, "Classic ArtsAndCrafters: no spinning, instant teleport on touch");
+            ClassicArtsAndCrafters = Config.Bind("Gameplay", "ClassicArtsAndCrafters", true, "A&C no spinning, instant teleport on touch");
             NoPrincipalFacultyKnock = Config.Bind("Gameplay", "NoPrincipalFacultyKnock", true, "Principal doesn't knock on faculty doors, just opens them");
-            OldConveyorBelt = Config.Bind("Gameplay", "OldConveyorBelt", true, "Old conveyor belt speed (12.5 instead of 25)");
+            OldConveyorBelt = Config.Bind("Gameplay", "OldConveyorBelt", true, "Old conveyor belt speed");
             NametagForFieldTrip = Config.Bind("Gameplay", "NametagForFieldTrip", true, "You can use nametag to field trip");
-            OnlyBaldiEveryFloor = Config.Bind("Gameplay", "OnlyBaldiEveryFloor", true, "Only Baldi spawns on every floor (no other NPCs)");
+            OnlyBaldiEveryFloor = Config.Bind("Gameplay", "OnlyBaldiEveryFloor", true, "Only Baldi spawns on every floor");
             SchoolHouseEscape = Config.Bind("Gameplay", "SchoolHouseEscape", true, "Play SchoolHouse Escape music when all notebooks are collected");
-            NoTransparentMap = Config.Bind("Gameplay", "NoTransparentMap", true, "Remove transparent/fog from the map");
-            BootsSnapRope = Config.Bind("Gameplay", "BootsSnapRope", true, "Boots snap the jump rope");
+            NoTransparentMap = Config.Bind("Gameplay", "NoTransparentMap", true, "Remove transparent in the map");
+            BootsSnapRope = Config.Bind("Gameplay", "BootsSnapRope", true, "Boots snap the jumprope");
 
             StaminaOnPoints = Config.Bind("Stamina", "StaminaOnPoints", true, "Restore stamina when getting points (1 point = 1%)");
             ColoredActivities = Config.Bind("Visuals", "ColoredActivities", true, "Colored balloons in activities (makes activities easy)");
