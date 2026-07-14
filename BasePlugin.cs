@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace PatchedAndLatched
 {
-    [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "1.2.0")]
+    [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "1.2.1")]
     public class PatchedAndLatchedPlugin : BaseUnityPlugin
     {
         public static ConfigEntry<bool> CutGrapplingHook = null!;
@@ -64,42 +64,42 @@ namespace PatchedAndLatched
             ReplaceDietBSODA = Config.Bind("Gameplay", "ReplaceDietBSODA", true, "Regular BSODA completely replaces diet BSODA");
             ClassicArtsAndCrafters = Config.Bind("Gameplay", "ClassicArtsAndCrafters", true, "Classic ArtsAndCrafters: no spinning, instant teleport on touch");
             NoPrincipalFacultyKnock = Config.Bind("Gameplay", "NoPrincipalFacultyKnock", false, "Principal doesn't knock on faculty doors, just opens them");
-            OldConveyorBelt = Config.Bind("Gameplay", "OldConveyorBelt", true, "Old conveyor belt speed (12.5 instead of 25)");
+            OldConveyorBelt = Config.Bind("Gameplay", "OldConveyorBelt", true, "Old conveyor belt speed");
             NametagForFieldTrip = Config.Bind("Gameplay", "NametagForFieldTrip", true, "You can use nametag to field trip");
-            OnlyBaldiEveryFloor = Config.Bind("Gameplay", "OnlyBaldiEveryFloor", false, "Only Baldi spawns on every floor (no other NPCs)");
+            OnlyBaldiEveryFloor = Config.Bind("Gameplay", "OnlyBaldiEveryFloor", false, "Only Baldi spawns on every floor");
             SchoolHouseEscape = Config.Bind("Visuals", "SchoolHouseEscape", true, "Play SchoolHouse Escape music when all notebooks are collected");
-            NoTransparentMap = Config.Bind("Visuals", "NoTransparentMap", true, "Remove transparent/fog from the map");
-            BootsSnapRope = Config.Bind("Gameplay", "BootsSnapRope", true, "Boots snap the jump rope");
+            NoTransparentMap = Config.Bind("Visuals", "NoTransparentMap", true, "Remove transparent from the map");
+            BootsSnapRope = Config.Bind("Gameplay", "BootsSnapRope", true, "Boots snap the jumprope");
             StaminaSpeedModifier = Config.Bind("Gameplay", "StaminaSpeedModifier", true, "Speed scales with stamina (low stamina = slower, high stamina = faster)");
-            BootsClassicDuration = Config.Bind("Gameplay", "BootsClassicDuration", true, "Boots duration is 15 seconds (classic)");
-            NotebookRestoreStamina = Config.Bind("Gameplay", "NotebookRestoreStamina", true, "Restore full stamina when clicking a notebook");
-            GottaSweepAcceleration = Config.Bind("Gameplay", "GottaSweepAcceleration", true, "Gotta Sweep starts slow and accelerates over time (10 sec, 30% start)");
+            BootsClassicDuration = Config.Bind("Gameplay", "BootsClassicDuration", true, "Boots duration is 15 seconds");
+            NotebookRestoreStamina = Config.Bind("Gameplay", "NotebookRestoreStamina", true, "Restore full stamina when collect a notebook");
+            GottaSweepAcceleration = Config.Bind("Gameplay", "GottaSweepAcceleration", true, "Gotta Sweep starts slow and accelerates over time");
             CustomInventorySlots = Config.Bind("Gameplay", "CustomInventorySlots", false, "Enable custom inventory slot count");
             InventorySlotCount = Config.Bind("Gameplay", "InventorySlotCount", 9, "Number of inventory slots (1-9)");
-            InfiniteSodaMachine = Config.Bind("Gameplay", "InfiniteSodaMachine", true, "Soda machines never run out of uses");
+            InfiniteSodaMachine = Config.Bind("Gameplay", "InfiniteSodaMachine", true, "Vendings machines never run out of uses");
             GrapplingHookBreakWindows = Config.Bind("Gameplay", "GrapplingHookBreakWindows", true, "Grappling Hook can break windows");
-            GrapplingHookOpenDoors = Config.Bind("Gameplay", "GrapplingHookOpenDoors", true, "Grappling Hook can open doors/interact with clickables");
+            GrapplingHookOpenDoors = Config.Bind("Gameplay", "GrapplingHookOpenDoors", true, "Grappling Hook can open doors with clickables");
             GrapplingHookPushNPCs = Config.Bind("Gameplay", "GrapplingHookPushNPCs", true, "Grappling Hook pushes NPCs on hit");
             GrapplingHookHitGum = Config.Bind("Gameplay", "GrapplingHookHitGum", true, "Grappling Hook can hit flying gum");
             EnableSeedLetters = Config.Bind("Gameplay", "EnableSeedLetters", true, "Enable letter-based seed input (A-Z, 0-9)");
             FirstPrizeBreakByBSODA = Config.Bind("Gameplay", "FirstPrizeBreakByBSODA", true, "BSODA can stun FirstPrize on hit");
             InfiniteReach = Config.Bind("Gameplay", "InfiniteReach", false, "Allows picking up items from any distance");
             ReachDistance = Config.Bind("Gameplay", "ReachDistance", 10000f, "Maximum reach distance for picking up items (10000 = infinite)");
-            EnableDropItem = Config.Bind("Gameplay", "EnableDropItem", true, "Drop current item with R key");
-            StaminaOnPoints = Config.Bind("Stamina", "StaminaOnPoints", true, "Restore stamina when getting points (1 point = 1%)");
-            FastModeEnabled = Config.Bind("FunSettings", "FastMode", false, "Everything moves faster (NPCs, player)");
+            EnableDropItem = Config.Bind("Gameplay", "EnableDropItem", true, "Drop item with R key");
+            StaminaOnPoints = Config.Bind("Stamina", "StaminaOnPoints", true, "Restore stamina when getting points");
+            FastModeEnabled = Config.Bind("FunSettings", "FastMode", false, "Everything moves faster");
             LethalTouchEnabled = Config.Bind("FunSettings", "LethalTouch", false, "Any NPC touching the player kills them instantly");
-            LightsOutEnabled = Config.Bind("FunSettings", "LightsOut", false, "Darkness with lanterns (player and Principal have lights)");
-            AllKnowingPrincipalEnabled = Config.Bind("FunSettings", "AllKnowingPrincipal", false, "Principal instantly knows where you are, chases you, and shows a blue arrow on the map");
+            LightsOutEnabled = Config.Bind("FunSettings", "LightsOut", false, "Darkness anywhere");
+            AllKnowingPrincipalEnabled = Config.Bind("FunSettings", "AllKnowingPrincipal", false, "Principal instantly knows where you are, chases you");
             ColoredActivities = Config.Bind("Visuals", "ColoredActivities", true, "Colored balloons in activities (makes activities easy)");
             RandomJumpsEnabled = Config.Bind("Gameplay", "RandomJumpsEnabled", false, "Enable random jump count in Playtime minigame");
-            MinJumps = Config.Bind("Gameplay", "MinJumps", 3, "Minimum number of jumps required (inclusive)");
-            MaxJumps = Config.Bind("Gameplay", "MaxJumps", 10, "Maximum number of jumps required (inclusive)");
+            MinJumps = Config.Bind("Gameplay", "MinJumps", 3, "Minimum number of jumps required");
+            MaxJumps = Config.Bind("Gameplay", "MaxJumps", 10, "Maximum number of jumps required");
             FasterJumpropeEnabled = Config.Bind("Gameplay", "FasterJumpropeEnabled", false, "Makes jumprope 1.5x faster");
             BaldiKillsNPCs = Config.Bind("Gameplay", "BaldiKillsNPCs", false, "Baldi can kill other NPCs when touching them");
-            FinalLevelPreEndingEnabled = Config.Bind("Gameplay", "FinalLevelPreEndingEnabled", true, "On the final level, when breaking the penultimate elevator, end all events, despawn other NPCs, and Baldi accelerates over time");
-            GrapplingHookBreakBalder = Config.Bind("Gameplay", "GrapplingHookBreakBalder", true, "Grappling Hook can break/crumble Balder on hit");
-            AlwaysClosedValves = Config.Bind("Gameplay", "AlwaysClosedValves", true, "Steam valves always start closed (off)");
+            FinalLevelPreEndingEnabled = Config.Bind("Gameplay", "FinalLevelPreEndingEnabled", true, "On the final level, when breaking the pre last elevator, despawn other NPCs, and Baldi accelerates faster over time");
+            GrapplingHookBreakBalder = Config.Bind("Gameplay", "GrapplingHookBreakBalder", true, "Grappling Hook can breakBalder on hit");
+            AlwaysClosedValves = Config.Bind("Gameplay", "AlwaysClosedValves", true, "Steam valves always start closed");
             LockdownDoorSpeedMultiplier = Config.Bind("Gameplay", "LockdownDoorSpeedMultiplier", 5f, "Multiplier for Lockdown Door movement speed (default 1)");
             if (CutGrapplingHook.Value) Harmony.CreateAndPatchAll(typeof(GrapplingHookCutPatch));
             if (ColoredActivities.Value)
