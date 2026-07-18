@@ -20,17 +20,17 @@ namespace PatchedAndLatched.Patches
         {
             if (!enabled) return;
             if (!other.CompareTag("Player")) return;
+            if (_npc == null) return;
 
-            Baldi? baldi = null;
-            if (_npc is Baldi)
-                baldi = _npc as Baldi;
-            else
-            {
-                Baldi[] baldies = Object.FindObjectsOfType<Baldi>();
-                if (baldies.Length > 0)
-                    baldi = baldies[0];
-            }
-            CoreGameManager.Instance.EndGame(other.transform, baldi);
+            Baldi? baldi = _npc.ec?.GetBaldi();
+            if (baldi == null && _npc is Baldi b)
+                baldi = b;
+
+            if (baldi == null) return;
+
+            var core = Singleton<CoreGameManager>.Instance;
+            if (core != null)
+                core.EndGame(other.transform, baldi);
         }
     }
 

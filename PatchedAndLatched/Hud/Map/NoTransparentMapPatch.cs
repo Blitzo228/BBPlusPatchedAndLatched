@@ -8,7 +8,7 @@ namespace SmallChanges.Patches
     [HarmonyPatch(typeof(Map))]
     public static class NoTransparentMapPatch
     {
-        private static Material opaqueMat = null;
+        private static Material? opaqueMat = null;
 
         private static void CreateOpaqueMaterial()
         {

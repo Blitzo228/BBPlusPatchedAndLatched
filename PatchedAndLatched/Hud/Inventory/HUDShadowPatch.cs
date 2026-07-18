@@ -6,11 +6,9 @@ using UnityEngine.UI;
 
 namespace PatchedAndLatched.Patches
 {
-
     public class ShadowFollower : MonoBehaviour
     {
-        public RectTransform target;
-
+        public RectTransform? target;
         private RectTransform _myRT;
 
         private void Awake()
@@ -43,7 +41,8 @@ namespace PatchedAndLatched.Patches
         {
             if (!PatchedAndLatchedPlugin.EnableHUDShadows.Value) return;
             if (__instance == null) return;
-            if (__instance.gameObject.name.EndsWith("_Shadow")) return; 
+            if (__instance.gameObject.name.EndsWith("_Shadow")) return;
+
             Transform parent = __instance.transform;
             bool isInHUD = false;
             while (parent != null)
@@ -74,13 +73,12 @@ namespace PatchedAndLatched.Patches
 
             if (existing != null)
                 return existing.GetComponent<TMP_Text>();
+
             GameObject shadowGo = new GameObject(shadowName);
             shadowGo.transform.SetParent(parent, false);
 
             TMP_Text shadow = (TMP_Text)shadowGo.AddComponent(original.GetType());
-
             shadowGo.transform.SetSiblingIndex(original.transform.GetSiblingIndex());
-
             ((Graphic)shadow).raycastTarget = false;
 
             ShadowFollower follower = shadowGo.AddComponent<ShadowFollower>();
@@ -97,7 +95,6 @@ namespace PatchedAndLatched.Patches
             shadow.alignment = original.alignment;
             shadow.enableWordWrapping = original.enableWordWrapping;
             shadow.richText = original.richText;
-
 
             Color color = original.color;
             shadow.color = new Color(color.r * 0.5f, color.g * 0.5f, color.b * 0.5f, 0.4f);

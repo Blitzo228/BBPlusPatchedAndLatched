@@ -61,7 +61,7 @@ namespace PatchedAndLatched.Patches
             baldiTransform.localPosition = startPos;
         }
 
-        private static void PlaySound(string name, Vector3 position, Baldi baldi = null)
+        private static void PlaySound(string name, Vector3 position, Baldi? baldi = null)
         {
             SoundObject sound = Resources.Load<SoundObject>("Sounds/" + name);
             if (sound == null) sound = Resources.Load<SoundObject>(name);

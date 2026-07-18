@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace PatchedAndLatched
 {
-    [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "1.3.0")]
+    [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "1.3.1")]
     public class PatchedAndLatchedPlugin : BaseUnityPlugin
     {
         public static ConfigEntry<bool> CutGrapplingHook = null!;
