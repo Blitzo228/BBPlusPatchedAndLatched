@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 
 namespace PatchedAndLatched.Patches
 {
@@ -9,7 +8,7 @@ namespace PatchedAndLatched.Patches
     {
         private static bool Prefix(ref int ___usesLeft)
         {
-            if (!PatchedAndLatchedPlugin.InfiniteSodaMachine.Value) return true;
+            if (!PatchedAndLatchedPlugin.InfiniteSodaMachine!.Value) return true;
 
             ___usesLeft++;
             return true;

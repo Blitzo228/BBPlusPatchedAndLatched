@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System.Collections;
 using UnityEngine;
 
@@ -8,12 +7,12 @@ namespace PatchedAndLatched.Patches
     [HarmonyPatch(typeof(Baldi_Chase))]
     internal static class BaldiKillsNPCsPatch
     {
-        private static SoundObject _loseBuzzSound;
+        private static SoundObject? _loseBuzzSound;
         private static bool _soundFound = false;
         private static float _lastSoundTime = -1f;
-        private const float SOUND_COOLDOWN = 0.5f; 
+        private const float SOUND_COOLDOWN = 0.5f;
 
-        private static SoundObject GetLoseBuzzSound()
+        private static SoundObject? GetLoseBuzzSound()
         {
             if (_soundFound) return _loseBuzzSound;
             SoundObject[] allSounds = Resources.FindObjectsOfTypeAll<SoundObject>();
@@ -33,7 +32,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool Prefix(Baldi_Chase __instance, Entity otherEntity, Collider other, bool validCollision)
         {
-            if (!PatchedAndLatchedPlugin.BaldiKillsNPCs.Value) return true;
+            if (!PatchedAndLatchedPlugin.BaldiKillsNPCs!.Value) return true;
             if (!validCollision) return true;
             if (other.CompareTag("Player")) return true;
 
@@ -54,7 +53,7 @@ namespace PatchedAndLatched.Patches
         {
             if (Time.time - _lastSoundTime > SOUND_COOLDOWN)
             {
-                SoundObject buzz = GetLoseBuzzSound();
+                SoundObject? buzz = GetLoseBuzzSound();
                 if (buzz != null && Singleton<CoreGameManager>.Instance?.audMan != null)
                 {
                     if (!Singleton<CoreGameManager>.Instance.audMan.audioSourceManager.isPlaying)
@@ -91,7 +90,6 @@ namespace PatchedAndLatched.Patches
             Shader.SetGlobalInt("_ColorGlitching", 0);
             Shader.SetGlobalInt("_SpriteColorGlitching", 0);
 
-            // 3. Удаляем NPC
             if (npc != null)
             {
                 if (npc.ec != null)

@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches
@@ -18,7 +17,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void AddTimeScale(EnvironmentController __instance)
         {
-            if (!PatchedAndLatchedPlugin.FastModeEnabled.Value) return;
+            if (!PatchedAndLatchedPlugin.FastModeEnabled!.Value) return;
             __instance.AddTimeScale(_timeScaleMod);
         }
 
@@ -26,7 +25,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void AddMoveMod(PlayerManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.FastModeEnabled.Value) return;
+            if (!PatchedAndLatchedPlugin.FastModeEnabled!.Value) return;
             if (!__instance.Am.moveMods.Contains(_moveMod))
                 __instance.Am.moveMods.Add(_moveMod);
         }

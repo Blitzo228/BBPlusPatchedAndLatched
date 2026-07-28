@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches
@@ -11,7 +10,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void MakeAllKnowing(Principal __instance)
         {
-            if (!PatchedAndLatchedPlugin.AllKnowingPrincipalEnabled.Value) return;
+            if (!PatchedAndLatchedPlugin.AllKnowingPrincipalEnabled!.Value) return;
 
             Traverse.Create(__instance).Field("allKnowing").SetValue(true);
 

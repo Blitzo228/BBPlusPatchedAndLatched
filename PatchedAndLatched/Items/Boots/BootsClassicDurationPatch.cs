@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System.Reflection;
 
 namespace PatchedAndLatched.Patches
@@ -13,7 +12,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Use")]
         public static void Use_Prefix(ITM_Boots __instance)
         {
-            if (!PatchedAndLatchedPlugin.BootsClassicDuration.Value) return;
+            if (!PatchedAndLatchedPlugin.BootsClassicDuration!.Value) return;
 
             if (_setTimeField == null)
                 _setTimeField = typeof(ITM_Boots).GetField("setTime", BindingFlags.NonPublic | BindingFlags.Instance);

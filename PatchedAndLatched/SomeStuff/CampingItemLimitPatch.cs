@@ -1,6 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
-using SmallChanges.Patches;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -24,29 +22,29 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void OverrideItemLimitInitialize(FieldTripBaseRoomFunction __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableCampingItemLimit.Value) return;
+            if (!PatchedAndLatchedPlugin.EnableCampingItemLimit!.Value) return;
             if (_itemLimitField == null) return;
             if (FieldTripNametagState.UsedNametag) return;
 
-            _itemLimitField.SetValue(__instance, PatchedAndLatchedPlugin.CampingItemPickupLimit.Value);
+            _itemLimitField.SetValue(__instance, PatchedAndLatchedPlugin.CampingItemPickupLimit!.Value);
         }
 
         [HarmonyPatch("StartMinigame")]
         [HarmonyPostfix]
         private static void OverrideItemLimitStartMinigame(FieldTripBaseRoomFunction __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableCampingItemLimit.Value) return;
+            if (!PatchedAndLatchedPlugin.EnableCampingItemLimit!.Value) return;
             if (_itemLimitField == null) return;
             if (FieldTripNametagState.UsedNametag) return;
 
-            _itemLimitField.SetValue(__instance, PatchedAndLatchedPlugin.CampingItemPickupLimit.Value);
+            _itemLimitField.SetValue(__instance, PatchedAndLatchedPlugin.CampingItemPickupLimit!.Value);
         }
 
         [HarmonyPatch("ItemCollected")]
         [HarmonyPrefix]
         private static bool PrefixItemCollected(FieldTripBaseRoomFunction __instance, Pickup pickup, int player)
         {
-            if (!PatchedAndLatchedPlugin.EnableCampingItemLimit.Value) return true;
+            if (!PatchedAndLatchedPlugin.EnableCampingItemLimit!.Value) return true;
             if (FieldTripNametagState.UsedNametag) return true;
 
             if (_itemsCollectedField != null)

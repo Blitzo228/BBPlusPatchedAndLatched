@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using UnityEngine;
-using PatchedAndLatched;
 
 namespace PatchedAndLatched.Patches
 {
@@ -16,13 +15,13 @@ namespace PatchedAndLatched.Patches
         private const float NORMAL_SPEED = 1.0f;
         private const float MAX_SPEED = 1.15f;
 
-        private const float STAMINA_DROP_MULTIPLIER = 1.25f; 
+        private const float STAMINA_DROP_MULTIPLIER = 1.25f;
 
         [HarmonyPostfix]
         [HarmonyPatch("Start")]
         public static void Start_Postfix(PlayerMovement __instance)
         {
-            if (!PatchedAndLatchedPlugin.StaminaSpeedModifier.Value) return;
+            if (!PatchedAndLatchedPlugin.StaminaSpeedModifier!.Value) return;
             if (_initialized) return;
 
             _originalWalkSpeed = __instance.walkSpeed;
@@ -37,7 +36,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Update")]
         public static void Update_Prefix(PlayerMovement __instance)
         {
-            if (!PatchedAndLatchedPlugin.StaminaSpeedModifier.Value) return;
+            if (!PatchedAndLatchedPlugin.StaminaSpeedModifier!.Value) return;
             if (!_initialized) return;
 
             float staminaRatio = __instance.stamina / __instance.StaminaMax;

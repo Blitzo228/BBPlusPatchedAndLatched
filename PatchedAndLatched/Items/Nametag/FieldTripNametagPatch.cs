@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace SmallChanges.Patches
+namespace PatchedAndLatched.Patches
 {
     public static class FieldTripNametagState
     {
@@ -16,7 +16,7 @@ namespace SmallChanges.Patches
     {
         static bool Prefix(FieldTripEntranceRoomFunction __instance, PlayerManager player, ref bool ___unlocked)
         {
-            if (!PatchedAndLatchedPlugin.NametagForFieldTrip.Value) return true;
+            if (!PatchedAndLatchedPlugin.NametagForFieldTrip!.Value) return true;
 
             if (player.itm.Has(Items.BusPass) || ___unlocked)
             {
@@ -41,7 +41,7 @@ namespace SmallChanges.Patches
     {
         static void Prefix(FieldTripBaseRoomFunction __instance, ref float ___itemLimit, List<Pickup> ___pickups)
         {
-            if (!PatchedAndLatchedPlugin.NametagForFieldTrip.Value) return;
+            if (!PatchedAndLatchedPlugin.NametagForFieldTrip!.Value) return;
             if (!FieldTripNametagState.UsedNametag) return;
 
             ___itemLimit = 1f;
@@ -101,7 +101,7 @@ namespace SmallChanges.Patches
     {
         static void Postfix(bool finished)
         {
-            if (!PatchedAndLatchedPlugin.NametagForFieldTrip.Value) return;
+            if (!PatchedAndLatchedPlugin.NametagForFieldTrip!.Value) return;
 
             if (finished)
             {

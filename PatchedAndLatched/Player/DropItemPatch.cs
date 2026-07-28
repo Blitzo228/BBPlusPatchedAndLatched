@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches
@@ -11,7 +10,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool Prefix(ItemManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableDropItem.Value) return true;
+            if (!PatchedAndLatchedPlugin.EnableDropItem!.Value) return true;
 
             if (Input.GetKeyDown(KeyCode.R))
             {

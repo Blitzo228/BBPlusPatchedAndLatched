@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System.Collections;
 using System.Reflection;
 using UnityEngine;
@@ -26,7 +25,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("StartSweeping")]
         public static void StartSweeping_Postfix(GottaSweep __instance)
         {
-            if (!PatchedAndLatchedPlugin.GottaSweepAcceleration.Value) return;
+            if (!PatchedAndLatchedPlugin.GottaSweepAcceleration!.Value) return;
 
             if (_currentCoroutine != null)
             {

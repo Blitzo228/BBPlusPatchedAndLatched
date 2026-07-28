@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches
@@ -12,7 +11,7 @@ namespace PatchedAndLatched.Patches
         public static void EntityTriggerEnter_Postfix(ITM_BSODA __instance, Entity otherEntity, Collider other, bool validCollision)
         {
             if (!validCollision) return;
-            if (!PatchedAndLatchedPlugin.FirstPrizeBreakByBSODA.Value) return;
+            if (!PatchedAndLatchedPlugin.FirstPrizeBreakByBSODA!.Value) return;
 
             FirstPrize? firstPrize = otherEntity?.GetComponent<FirstPrize>();
             if (firstPrize != null)

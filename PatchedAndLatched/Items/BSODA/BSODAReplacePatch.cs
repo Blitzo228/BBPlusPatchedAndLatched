@@ -1,8 +1,7 @@
 ﻿using HarmonyLib;
 using PatchedAndLatched;
-using UnityEngine;
 
-namespace SmallChanges.Patches
+namespace PatchedAndLatched.Patches
 {
     public static class BSODAReplacePatch
     {
@@ -13,7 +12,7 @@ namespace SmallChanges.Patches
             [HarmonyPatch("AddItem", new[] { typeof(ItemObject) })]
             public static void AddItem_Prefix(ref ItemObject item)
             {
-                if (!PatchedAndLatchedPlugin.ReplaceDietBSODA.Value) return;
+                if (!(PatchedAndLatchedPlugin.ReplaceDietBSODA?.Value ?? false)) return;
                 if (item == null) return;
 
                 if (item.name.ToLower().Contains("diet") && item.name.ToLower().Contains("bsoda"))
@@ -33,7 +32,7 @@ namespace SmallChanges.Patches
             [HarmonyPatch("AddItem", new[] { typeof(ItemObject), typeof(Pickup) })]
             public static void AddItemWithPickup_Prefix(ref ItemObject item)
             {
-                if (!PatchedAndLatchedPlugin.ReplaceDietBSODA.Value) return;
+                if (!PatchedAndLatchedPlugin.ReplaceDietBSODA!.Value) return;
                 if (item == null) return;
 
                 if (item.name.ToLower().Contains("diet") && item.name.ToLower().Contains("bsoda"))
@@ -57,7 +56,7 @@ namespace SmallChanges.Patches
             [HarmonyPatch("Load")]
             public static void Load_Postfix(PlayerFileManager __instance)
             {
-                if (!PatchedAndLatchedPlugin.ReplaceDietBSODA.Value) return;
+                if (!PatchedAndLatchedPlugin.ReplaceDietBSODA!.Value) return;
 
                 for (int i = __instance.itemObjects.Count - 1; i >= 0; i--)
                 {

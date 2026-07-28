@@ -1,7 +1,7 @@
 using HarmonyLib;
 using UnityEngine;
 
-namespace SmallChanges.Patches
+namespace PatchedAndLatched.Patches
 {
     [HarmonyPatch(typeof(Principal), "ObservePlayer")]
     internal class PrincipalPatch
@@ -19,7 +19,7 @@ namespace SmallChanges.Patches
         private static bool IsInHallway(PlayerManager player)
         {
             Cell val = player.ec.CellFromPosition(((Component)player).transform.position);
-            if (val == null || (Object)(object)val.room == (Object)null)
+            if (val == null || val.room == null)
             {
                 return false;
             }

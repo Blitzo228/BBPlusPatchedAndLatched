@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System.Reflection;
 
 namespace PatchedAndLatched.Patches
