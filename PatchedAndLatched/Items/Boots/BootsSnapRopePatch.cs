@@ -1,9 +1,8 @@
 ﻿using HarmonyLib;
 using PatchedAndLatched;
 using System.Reflection;
-using UnityEngine;
 
-namespace SmallChanges.Patches
+namespace PatchedAndLatched.Patches
 {
     [HarmonyPatch(typeof(Jumprope))]
     public static class BootsSnapRopePatch
@@ -15,7 +14,7 @@ namespace SmallChanges.Patches
         [HarmonyPatch("Update")]
         public static void Update_Prefix(Jumprope __instance)
         {
-            if (!PatchedAndLatchedPlugin.BootsSnapRope.Value) return;
+            if (!PatchedAndLatchedPlugin.BootsSnapRope!.Value) return;
             if (__instance.player == null) return;
 
             bool hasBootsEffect = false;
@@ -60,7 +59,7 @@ namespace SmallChanges.Patches
         [HarmonyPatch("Jump")]
         public static bool Jump_Prefix(Jumprope __instance)
         {
-            if (!PatchedAndLatchedPlugin.BootsSnapRope.Value) return true;
+            if (!PatchedAndLatchedPlugin.BootsSnapRope!.Value) return true;
             if (__instance.player == null) return true;
 
             bool hasBootsEffect = false;
@@ -88,4 +87,3 @@ namespace SmallChanges.Patches
         }
     }
 }
-

@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using UnityEngine;
 using System.Collections;
 using System.Linq;
@@ -18,16 +17,15 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool OnCaughtPlayer(Baldi __instance, PlayerManager player)
         {
-            if (!PatchedAndLatchedPlugin.EnableBaldiPushBack.Value)
-                return true;
+            if (!PatchedAndLatchedPlugin.EnableBaldiPushBack!.Value) return true;
 
-            if (_pushCount >= PatchedAndLatchedPlugin.BaldiMaxPushes.Value)
+            if (_pushCount >= PatchedAndLatchedPlugin.BaldiMaxPushes!.Value)
             {
                 _pushCount = 0;
                 return true;
             }
 
-            if (Time.time < _lastCatchTime + PatchedAndLatchedPlugin.BaldiPushCooldown.Value)
+            if (Time.time < _lastCatchTime + PatchedAndLatchedPlugin.BaldiPushCooldown!.Value)
                 return false;
 
             _lastCatchTime = Time.time;
@@ -36,7 +34,7 @@ namespace PatchedAndLatched.Patches
 
             Vector3 dir = (__instance.transform.position - player.transform.position).normalized;
             dir.y = 0f;
-            __instance.Entity.AddForce(new Force(dir, PatchedAndLatchedPlugin.BaldiPushForce.Value, -25f));
+            __instance.Entity.AddForce(new Force(dir, PatchedAndLatchedPlugin.BaldiPushForce!.Value, -25f));
 
             __instance.StartCoroutine(BaldiJump(__instance.spriteRenderer[0].transform));
 

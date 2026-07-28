@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches
@@ -11,7 +10,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void StartPostfix(Notebook __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableNotebookSpin.Value) return;
+            if (!PatchedAndLatchedPlugin.EnableNotebookSpin!.Value) return;
 
             Animator animator = __instance.GetComponent<Animator>();
             if (animator != null)

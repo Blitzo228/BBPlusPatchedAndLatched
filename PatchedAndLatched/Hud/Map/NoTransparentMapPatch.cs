@@ -1,9 +1,8 @@
 ﻿using HarmonyLib;
 using PatchedAndLatched;
-using System.Reflection;
 using UnityEngine;
 
-namespace SmallChanges.Patches
+namespace PatchedAndLatched.Patches
 {
     [HarmonyPatch(typeof(Map))]
     public static class NoTransparentMapPatch
@@ -35,7 +34,7 @@ namespace SmallChanges.Patches
         [HarmonyPatch("Initialize")]
         public static void Initialize_Postfix(Map __instance)
         {
-            if (!PatchedAndLatchedPlugin.NoTransparentMap.Value) return;
+            if (!PatchedAndLatchedPlugin.NoTransparentMap!.Value) return;
 
             CreateOpaqueMaterial();
 
@@ -69,7 +68,7 @@ namespace SmallChanges.Patches
         [HarmonyPatch("Update")]
         public static void Update_Postfix(Map __instance)
         {
-            if (!PatchedAndLatchedPlugin.NoTransparentMap.Value) return;
+            if (!PatchedAndLatchedPlugin.NoTransparentMap!.Value) return;
 
             for (int i = 0; i < __instance.size.x; i++)
             {
@@ -109,7 +108,7 @@ namespace SmallChanges.Patches
         [HarmonyPatch("Find")]
         public static void Find_Postfix(Map __instance, int posX, int posZ, int bin, RoomController room)
         {
-            if (!PatchedAndLatchedPlugin.NoTransparentMap.Value) return;
+            if (!PatchedAndLatchedPlugin.NoTransparentMap!.Value) return;
 
             MapTile tile = __instance.tiles[posX, posZ];
             if (tile != null)
@@ -130,7 +129,7 @@ namespace SmallChanges.Patches
         [HarmonyPatch(typeof(MapTile), "Reveal")]
         public static void MapTile_Reveal_Postfix(MapTile __instance)
         {
-            if (!PatchedAndLatchedPlugin.NoTransparentMap.Value) return;
+            if (!PatchedAndLatchedPlugin.NoTransparentMap!.Value) return;
 
             var renderer = __instance.SpriteRenderer;
             if (renderer != null)

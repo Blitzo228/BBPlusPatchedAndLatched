@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches
@@ -13,7 +12,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void AddLanternMode(EnvironmentController __instance)
         {
-            if (!PatchedAndLatchedPlugin.LightsOutEnabled.Value) return;
+            if (!PatchedAndLatchedPlugin.LightsOutEnabled!.Value) return;
 
             _lanternMode = __instance.gameObject.GetComponent<LanternMode>();
             if (_lanternMode == null)
@@ -30,7 +29,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void AddNPCLight(NPC __instance)
         {
-            if (!PatchedAndLatchedPlugin.LightsOutEnabled.Value) return;
+            if (!PatchedAndLatchedPlugin.LightsOutEnabled!.Value) return;
             if (_lanternMode == null) return;
             if (__instance.Character != Character.Principal) return;
 
@@ -41,7 +40,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static void RemoveNPCLight(NPC __instance)
         {
-            if (!PatchedAndLatchedPlugin.LightsOutEnabled.Value) return;
+            if (!PatchedAndLatchedPlugin.LightsOutEnabled!.Value) return;
             if (_lanternMode == null) return;
             if (__instance.Character != Character.Principal) return;
 

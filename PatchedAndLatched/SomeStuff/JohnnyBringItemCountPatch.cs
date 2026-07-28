@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace PatchedAndLatched.Patches
 {
@@ -12,9 +10,9 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void IncreaseBringCount(PitstopGameManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableJohnnyBringCount.Value) return;
+            if (!PatchedAndLatchedPlugin.EnableJohnnyBringCount!.Value) return;
 
-            int bringCount = PatchedAndLatchedPlugin.JohnnyBringItemCount.Value;
+            int bringCount = PatchedAndLatchedPlugin.JohnnyBringItemCount!.Value;
             if (bringCount <= 0) return;
 
             List<Pickup> pickups = __instance.fieldTripPickups;

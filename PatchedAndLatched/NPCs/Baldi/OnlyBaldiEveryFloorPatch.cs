@@ -2,7 +2,7 @@
 using PatchedAndLatched;
 using UnityEngine;
 
-namespace SmallChanges.Patches
+namespace PatchedAndLatched.Patches
 {
     [HarmonyPatch(typeof(Baldi))]
     public static class OnlyBaldiEveryFloorPatch
@@ -11,7 +11,7 @@ namespace SmallChanges.Patches
         [HarmonyPatch("UpdateSlapDistance")]
         public static void UpdateSlapDistance_Prefix(Baldi __instance)
         {
-            if (!PatchedAndLatchedPlugin.OnlyBaldiEveryFloor.Value) return;
+            if (!PatchedAndLatchedPlugin.OnlyBaldiEveryFloor!.Value) return;
 
             __instance.speedMultiplier = 5f;
         }
@@ -23,7 +23,7 @@ namespace SmallChanges.Patches
         [HarmonyPrefix]
         public static bool AddNpcsFromPreviousLevels_Prefix(LevelBuilder __instance)
         {
-            if (!PatchedAndLatchedPlugin.OnlyBaldiEveryFloor.Value) return true;
+            if (!PatchedAndLatchedPlugin.OnlyBaldiEveryFloor!.Value) return true;
 
             return false;
         }
@@ -35,7 +35,7 @@ namespace SmallChanges.Patches
         [HarmonyPostfix]
         public static void SpawnNPCs_Postfix(EnvironmentController __instance)
         {
-            if (!PatchedAndLatchedPlugin.OnlyBaldiEveryFloor.Value) return;
+            if (!PatchedAndLatchedPlugin.OnlyBaldiEveryFloor!.Value) return;
 
             int baldiCount = 0;
             for (int i = __instance.Npcs.Count - 1; i >= 0; i--)

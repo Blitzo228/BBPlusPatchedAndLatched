@@ -85,7 +85,7 @@ namespace PatchedAndLatched.Patches.OldTheTest
         {
             base.Update();
 
-            if (PatchedAndLatchedPlugin.EnableNewTestFeatures.Value)
+            if (PatchedAndLatchedPlugin.EnableNewTestFeatures!.Value)
             {
                 num = Mathf.Sin(npc.ec.SurpassedRealTime * (1f + pressure / maxPressure * 24f)) / 2f * (pressure / maxPressure) + 0.5f;
                 Vector3 pos = headTransform.localPosition;
@@ -137,7 +137,7 @@ namespace PatchedAndLatched.Patches.OldTheTest
                 return;
             }
 
-            if (PatchedAndLatchedPlugin.OldTestFastForward.Value && npc.ec.RemainingTime > 0)
+            if (PatchedAndLatchedPlugin.OldTestFastForward!.Value && npc.ec.RemainingTime > 0)
                 npc.ec.SetTimeLimit(npc.ec.RemainingTime - Time.deltaTime * 1.35f);
 
             if (charging)
@@ -146,7 +146,7 @@ namespace PatchedAndLatched.Patches.OldTheTest
                 theTest.UpdateHeadPosition(0f);
             }
 
-            if (PatchedAndLatchedPlugin.EnableNewTestFeatures.Value)
+            if (PatchedAndLatchedPlugin.EnableNewTestFeatures!.Value)
             {
                 time += Time.deltaTime;
                 if (time >= maxTime)
@@ -178,7 +178,7 @@ namespace PatchedAndLatched.Patches.OldTheTest
                 if (ent.Frozen && ent.GetComponent<PlayerManager>() == null)
                     ent.SetFrozen(false);
 
-            if (PatchedAndLatchedPlugin.OldTestDisappear.Value)
+            if (PatchedAndLatchedPlugin.OldTestDisappear!.Value)
             {
                 var hall = npc.ec.mainHall;
                 var cell = hall.cells[Random.Range(0, hall.cells.Count)];

@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System.Reflection;
 using UnityEngine;
 
@@ -20,21 +19,21 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static void OverrideClassTimeOnCatch(NoLateTeacher __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableMrsPompTimeControl.Value) return;
+            if (!PatchedAndLatchedPlugin.EnableMrsPompTimeControl!.Value) return;
             if (_classTimeField == null) return;
 
-            float newTime = PatchedAndLatchedPlugin.MrsPompClassTime.Value;
+            float newTime = PatchedAndLatchedPlugin.MrsPompClassTime!.Value;
 
-            if (PatchedAndLatchedPlugin.MrsPompRandomizeTime.Value)
+            if ((PatchedAndLatchedPlugin.MrsPompRandomizeTime!.Value))
             {
-                float min = PatchedAndLatchedPlugin.MrsPompMinTime.Value;
-                float max = PatchedAndLatchedPlugin.MrsPompMaxTime.Value;
+                float min = PatchedAndLatchedPlugin.MrsPompMinTime!.Value;
+                float max = PatchedAndLatchedPlugin.MrsPompMaxTime!.Value;
                 newTime = Random.Range(min, max);
             }
 
 
-            if (newTime < 60f) newTime = 60f;      
-            if (newTime > 9999f) newTime = 9999f;  
+            if (newTime < 60f) newTime = 60f;
+            if (newTime > 9999f) newTime = 9999f;
 
             _classTimeField.SetValue(__instance, newTime);
         }

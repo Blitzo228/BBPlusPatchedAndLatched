@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches
@@ -25,9 +24,9 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void Update_Postfix(ItemManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.CustomInventorySlots.Value) return;
+            if (!PatchedAndLatchedPlugin.CustomInventorySlots!.Value) return;
 
-            int targetSize = PatchedAndLatchedPlugin.InventorySlotCount.Value;
+            int targetSize = PatchedAndLatchedPlugin.InventorySlotCount!.Value;
             targetSize = Mathf.Clamp(targetSize, 1, 9);
             int targetMaxItem = targetSize - 1;
 
@@ -72,9 +71,9 @@ namespace PatchedAndLatched.Patches
 
         private static void ApplySlotCount(ItemManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.CustomInventorySlots.Value) return;
+            if (!PatchedAndLatchedPlugin.CustomInventorySlots!.Value) return;
 
-            int targetSize = PatchedAndLatchedPlugin.InventorySlotCount.Value;
+            int targetSize = PatchedAndLatchedPlugin.InventorySlotCount!.Value;
             targetSize = Mathf.Clamp(targetSize, 1, 9);
             int targetMaxItem = targetSize - 1;
 

@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System.Reflection;
-using UnityEngine;
 using System.Collections.Generic;
 
 namespace PatchedAndLatched.Patches
@@ -17,7 +15,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("AllNotebooks")]
         public static void AllNotebooks_Postfix(BaseGameManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.OnlyBaldiEveryFloor.Value) return;
+            if (!PatchedAndLatchedPlugin.OnlyBaldiEveryFloor!.Value) return;
             if (_timeOutStarted) return;
 
             if (_ecField == null)
@@ -63,7 +61,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Initialize")]
         public static void Initialize_Prefix(BaseGameManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.OnlyBaldiEveryFloor.Value) return;
+            if (!PatchedAndLatchedPlugin.OnlyBaldiEveryFloor!.Value) return;
             _timeOutStarted = false;
         }
     }

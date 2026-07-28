@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches
@@ -11,11 +10,11 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void SetRandomJumps(Playtime __instance, Jumprope ___currentJumprope)
         {
-            if (!PatchedAndLatchedPlugin.RandomJumpsEnabled.Value) return;
+            if (!(PatchedAndLatchedPlugin.RandomJumpsEnabled!.Value)) return;
             if (___currentJumprope == null) return;
 
-            int min = PatchedAndLatchedPlugin.MinJumps.Value;
-            int max = PatchedAndLatchedPlugin.MaxJumps.Value;
+            int min = PatchedAndLatchedPlugin.MinJumps!.Value;
+            int max = PatchedAndLatchedPlugin.MaxJumps!.Value;
             if (min > max)
             {
                 int temp = min;

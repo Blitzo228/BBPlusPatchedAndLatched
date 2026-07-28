@@ -1,7 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
-using PatchedAndLatched.Patches.OldTheTest;
-using System.Reflection;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches.OldTheTest
@@ -33,8 +30,8 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static bool Prefix(LookAtGuy __instance, TimeScaleModifier ___timeScale, bool ___fleeing, QuickExplosion ___explosionPrefab, Sprite ___crumbledSprite, Transform ___billboardedTransform, Transform ___headTransform, AnimatedSpriteRotator ___spriteRotator, SpriteRenderer ___sprite, AudioManager ___blindAudMan, SoundObject ___audBlindStart, SoundObject ___audBlindLoop, HudGauge ___gauge, Sprite ___gaugeSprite, float ___fogTime)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior.Value)
-                return true; 
+            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value)
+                return true;
 
             __instance.FreezeNPCs(false);
             __instance.Navigator.maxSpeed = 0f;
@@ -86,13 +83,13 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static bool Prefix(LookAtGuy __instance, ref PlayerManager player, int ___currentSpeedLevel, float[] ___speedLevels, float ___moveSpeed)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior.Value)
+            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value)
                 return true;
 
             __instance.behaviorStateMachine.CurrentNavigationState.priority = 0;
             __instance.behaviorStateMachine.ChangeNavigationState(new NavigationState_TargetPlayer(__instance, 127, player.transform.position, true));
 
-            bool useNew = PatchedAndLatchedPlugin.EnableNewTestFeatures.Value;
+            bool useNew = PatchedAndLatchedPlugin.EnableNewTestFeatures!.Value;
             float targetSpeed = useNew ? ___speedLevels[2] : ___speedLevels[___speedLevels.Length - 1];
 
             if (___currentSpeedLevel >= (useNew ? 2 : ___speedLevels.Length) && !useNew)
@@ -118,7 +115,7 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static bool Prefix(LookAtGuy __instance, int ___currentSpeedLevel)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior.Value)
+            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value)
                 return true;
 
             __instance.behaviorStateMachine.CurrentNavigationState.priority = 0;
@@ -139,7 +136,7 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static bool Prefix(ref bool freeze, LookAtGuy __instance, AudioManager ___audMan, AudioManager ___rumbleAudMan, TimeScaleModifier ___timeScale, SoundObject ___audLoop, SoundObject ___audSighted)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior.Value)
+            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value)
                 return true;
 
             var freezingField = AccessTools.Field(typeof(LookAtGuy), "freezing");
@@ -149,7 +146,7 @@ namespace PatchedAndLatched.Patches.OldTheTest
                 if (freezingField != null && !(bool)freezingField.GetValue(__instance))
                 {
                     __instance.ec.AddTimeScale(___timeScale);
-                    if (!PatchedAndLatchedPlugin.OldTestMovingItems.Value)
+                    if (!PatchedAndLatchedPlugin.OldTestMovingItems!.Value)
                     {
                         foreach (var bob in Object.FindObjectsOfType<PickupBobValue>())
                             if (bob.speed != 0f)
@@ -168,7 +165,7 @@ namespace PatchedAndLatched.Patches.OldTheTest
                 if (freezingField != null && (bool)freezingField.GetValue(__instance))
                 {
                     __instance.ec.RemoveTimeScale(___timeScale);
-                    if (!PatchedAndLatchedPlugin.OldTestMovingItems.Value)
+                    if (!PatchedAndLatchedPlugin.OldTestMovingItems!.Value)
                     {
                         foreach (var bob in Object.FindObjectsOfType<PickupBobValue>())
                             if (bob.speed != 5f)
@@ -189,7 +186,7 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static void Postfix(LookAtGuy __instance, Transform ___headTransform, TimeScaleModifier ___timeScale)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior.Value)
+            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value)
                 return;
 
             __instance.Navigator.Initialize(__instance.ec);
@@ -205,8 +202,8 @@ namespace PatchedAndLatched.Patches.OldTheTest
             if (speedLevelField != null)
                 speedLevelField.SetValue(__instance, 0);
 
-            ___timeScale.npcTimeScale = PatchedAndLatchedPlugin.OldTestTimeStop.Value ? 0f : 0.35f;
-            ___timeScale.environmentTimeScale = PatchedAndLatchedPlugin.OldTestMovingItems.Value ? 1f : 0f;
+            ___timeScale.npcTimeScale = PatchedAndLatchedPlugin.OldTestTimeStop!.Value ? 0f : 0.35f;
+            ___timeScale.environmentTimeScale = PatchedAndLatchedPlugin.OldTestMovingItems!.Value ? 1f : 0f;
         }
     }
 
@@ -216,7 +213,7 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static bool Prefix(LookAtGuy __instance, TimeScaleModifier ___timeScale, AnimatedSpriteRotator ___spriteRotator, SpriteRenderer ___sprite, Transform ___headTransform, AudioManager ___blindAudMan)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior.Value)
+            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value)
                 return true;
 
             var hall = __instance.ec.mainHall;
@@ -241,7 +238,7 @@ namespace PatchedAndLatched.Patches.OldTheTest
             __instance.behaviorStateMachine.ChangeState(new LookAt_OldInactive(__instance, ___headTransform));
             __instance.ec.RemoveTimeScale(___timeScale);
 
-            ___timeScale.npcTimeScale = PatchedAndLatchedPlugin.OldTestTimeStop.Value ? 0f : 0.35f;
+            ___timeScale.npcTimeScale = PatchedAndLatchedPlugin.OldTestTimeStop!.Value ? 0f : 0.35f;
             ___timeScale.environmentTimeScale = 1f;
             ___headTransform.gameObject.SetActive(true);
 
@@ -255,7 +252,7 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static bool Prefix()
         {
-            return !PatchedAndLatchedPlugin.EnableOldTestBehavior.Value;
+            return !PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value;
         }
     }
 }

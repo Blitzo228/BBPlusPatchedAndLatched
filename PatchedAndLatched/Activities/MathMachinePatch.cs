@@ -1,50 +1,89 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
-using System;
 using System.Collections.Generic;
-using System.Reflection;
 using TMPro;
-using UnityEngine;
 
 namespace PatchedAndLatched.Patches
 {
     [HarmonyPatch(typeof(MathMachine))]
     internal static class MathMachinePatch
     {
+        private static readonly AccessTools.FieldRef<MathMachine, List<int>> FieldAvailableAnswers =
+            AccessTools.FieldRefAccess<MathMachine, List<int>>("_availableAnswers");
+        private static readonly AccessTools.FieldRef<MathMachine, int> FieldAnswer =
+            AccessTools.FieldRefAccess<MathMachine, int>("answer");
+        private static readonly AccessTools.FieldRef<MathMachine, int> FieldNum1 =
+            AccessTools.FieldRefAccess<MathMachine, int>("num1");
+        private static readonly AccessTools.FieldRef<MathMachine, int> FieldNum2 =
+            AccessTools.FieldRefAccess<MathMachine, int>("num2");
+        private static readonly AccessTools.FieldRef<MathMachine, bool> FieldAddition =
+            AccessTools.FieldRefAccess<MathMachine, bool>("addition");
+        private static readonly AccessTools.FieldRef<MathMachine, TMP_Text> FieldVal1Text =
+            AccessTools.FieldRefAccess<MathMachine, TMP_Text>("val1Text");
+        private static readonly AccessTools.FieldRef<MathMachine, TMP_Text> FieldVal2Text =
+            AccessTools.FieldRefAccess<MathMachine, TMP_Text>("val2Text");
+        private static readonly AccessTools.FieldRef<MathMachine, TMP_Text> FieldSignText =
+            AccessTools.FieldRefAccess<MathMachine, TMP_Text>("signText");
+        private static readonly AccessTools.FieldRef<MathMachine, TMP_Text> FieldAnswerText =
+            AccessTools.FieldRefAccess<MathMachine, TMP_Text>("answerText");
+
+        private static readonly (int num1, int num2, int answer)[] MultiplicationPool = new[]
+        {
+            (1,1,1),(1,2,2),(1,3,3),(1,4,4),(1,5,5),(1,6,6),(1,7,7),(1,8,8),(1,9,9),
+            (2,1,2),(2,2,4),(2,3,6),(2,4,8),(3,1,3),(3,2,6),(3,3,9),(4,1,4),(4,2,8),
+            (5,1,5),(6,1,6),(7,1,7),(8,1,8),(9,1,9)
+        };
+
+        private static readonly (int num1, int num2, int answer)[] DivisionPool = new[]
+        {
+            (1,1,1),(2,1,2),(2,2,1),(3,1,3),(3,3,1),(4,1,4),(4,2,2),(4,4,1),(5,1,5),(5,5,1),
+            (6,1,6),(6,2,3),(6,3,2),(6,6,1),(7,1,7),(7,7,1),(8,1,8),(8,2,4),(8,4,2),(8,8,1),
+            (9,1,9),(9,3,3),(9,9,1)
+        };
+
+        private static readonly (int num1, int num2, int answer)[] ExponentPool = new[]
+        {
+            (0,1,0),(0,2,0),(0,3,0),
+            (1,0,1),(1,1,1),(1,2,1),(1,3,1),
+            (2,0,1),(2,1,2),(2,2,4),(2,3,8),
+            (3,0,1),(3,1,3),(3,2,9),
+            (4,0,1),(4,1,4),
+            (5,0,1),(5,1,5),
+            (6,0,1),(6,1,6),
+            (7,0,1),(7,1,7),
+            (8,0,1),(8,1,8),
+            (9,0,1),(9,1,9)
+        };
+
+        private static readonly int[] ValidOpsBuffer = new int[5];
+
         [HarmonyPatch("NewProblem")]
         [HarmonyPrefix]
         private static bool NewProblemPrefix(MathMachine __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableMathMachineMultiplication.Value &&
-                !PatchedAndLatchedPlugin.EnableMathMachineDivision.Value)
+            bool mul = PatchedAndLatchedPlugin.EnableMathMachineMultiplication!.Value;
+            bool div = PatchedAndLatchedPlugin.EnableMathMachineDivision!.Value;
+            bool exp = PatchedAndLatchedPlugin.EnableMathMachineExponent!.Value;
+
+            if (!mul && !div && !exp)
                 return true;
 
             try
             {
-                var type = __instance.GetType();
-                var fieldAvailableAnswers = type.GetField("_availableAnswers", BindingFlags.Instance | BindingFlags.NonPublic);
-                var fieldAnswer = type.GetField("answer", BindingFlags.Instance | BindingFlags.NonPublic);
-                var fieldNum1 = type.GetField("num1", BindingFlags.Instance | BindingFlags.NonPublic);
-                var fieldNum2 = type.GetField("num2", BindingFlags.Instance | BindingFlags.NonPublic);
-                var fieldAddition = type.GetField("addition", BindingFlags.Instance | BindingFlags.NonPublic);
-                var fieldVal1Text = type.GetField("val1Text", BindingFlags.Instance | BindingFlags.NonPublic);
-                var fieldVal2Text = type.GetField("val2Text", BindingFlags.Instance | BindingFlags.NonPublic);
-                var fieldSignText = type.GetField("signText", BindingFlags.Instance | BindingFlags.NonPublic);
-                var fieldAnswerText = type.GetField("answerText", BindingFlags.Instance | BindingFlags.NonPublic);
+                var availableAnswers = FieldAvailableAnswers(__instance);
+                var val1Text = FieldVal1Text(__instance);
+                var val2Text = FieldVal2Text(__instance);
+                var signText = FieldSignText(__instance);
+                var answerText = FieldAnswerText(__instance);
 
-                if (fieldAvailableAnswers == null || fieldAnswer == null || fieldSignText == null)
+                if (availableAnswers == null || signText == null)
                     return true;
 
-                var availableAnswers = (List<int>)fieldAvailableAnswers.GetValue(__instance);
-                var val1Text = (TMP_Text)fieldVal1Text.GetValue(__instance);
-                var val2Text = (TMP_Text)fieldVal2Text.GetValue(__instance);
-                var signText = (TMP_Text)fieldSignText.GetValue(__instance);
-                var answerText = (TMP_Text)fieldAnswerText.GetValue(__instance);
-
                 availableAnswers.Clear();
-                foreach (var num in __instance.currentNumbers)
+                int currentCount = __instance.currentNumbers.Count;
+                for (int i = 0; i < currentCount; i++)
                 {
-                    if (num.Available)
+                    var num = __instance.currentNumbers[i];
+                    if (num != null && num.Available)
                         availableAnswers.Add(num.Value);
                 }
 
@@ -57,7 +96,7 @@ namespace PatchedAndLatched.Patches
                     attempts++;
                     answerText.text = "?";
 
-                    int op = GetRandomOperation();
+                    int op = GetRandomOperation(mul, div, exp);
                     int num1 = 0, num2 = 0;
                     bool isAddition = false;
 
@@ -65,11 +104,11 @@ namespace PatchedAndLatched.Patches
                     {
                         case 0:
                             signText.text = "×";
-                            (num1, num2, answer) = GenerateMultiplication();
+                            (num1, num2, answer) = MultiplicationPool[UnityEngine.Random.Range(0, MultiplicationPool.Length)];
                             break;
                         case 1:
                             signText.text = "÷";
-                            (num1, num2, answer) = GenerateDivision();
+                            (num1, num2, answer) = DivisionPool[UnityEngine.Random.Range(0, DivisionPool.Length)];
                             break;
                         case 2:
                             signText.text = "+";
@@ -84,67 +123,52 @@ namespace PatchedAndLatched.Patches
                             num2 = UnityEngine.Random.Range(0, num1 + 1);
                             answer = num1 - num2;
                             break;
+                        case 4:
+                            signText.text = "^";
+                            (num1, num2, answer) = ExponentPool[UnityEngine.Random.Range(0, ExponentPool.Length)];
+                            break;
                     }
 
                     val1Text.text = num1.ToString();
                     val2Text.text = num2.ToString();
-                    fieldNum1.SetValue(__instance, num1);
-                    fieldNum2.SetValue(__instance, num2);
-                    fieldAnswer.SetValue(__instance, answer);
-                    fieldAddition.SetValue(__instance, isAddition);
 
-                    if (!availableAnswers.Contains(answer) || answer < 0 || answer > 9)
+                    FieldNum1(__instance) = num1;
+                    FieldNum2(__instance) = num2;
+                    FieldAnswer(__instance) = answer;
+                    FieldAddition(__instance) = isAddition;
+
+                    if (answer < 0 || answer > 9 || !availableAnswers.Contains(answer))
                         answer = -1;
                 }
 
-                return false; 
+                return false;
             }
             catch
             {
-                return true; 
+                return true;
             }
         }
 
-        private static int GetRandomOperation()
+        private static int GetRandomOperation(bool mul, bool div, bool exp)
         {
-            bool mul = PatchedAndLatchedPlugin.EnableMathMachineMultiplication.Value;
-            bool div = PatchedAndLatchedPlugin.EnableMathMachineDivision.Value;
-            bool replace = PatchedAndLatchedPlugin.ReplaceMathMachineCompletely.Value;
+            bool replace = PatchedAndLatchedPlugin.ReplaceMathMachineCompletely!.Value;
+            int count = 0;
 
             if (replace)
             {
-                var ops = new List<int>();
-                if (mul) ops.Add(0);
-                if (div) ops.Add(1);
-                return ops.Count > 0 ? ops[UnityEngine.Random.Range(0, ops.Count)] : UnityEngine.Random.Range(2, 4);
+                if (mul) ValidOpsBuffer[count++] = 0;
+                if (div) ValidOpsBuffer[count++] = 1;
+                if (exp) ValidOpsBuffer[count++] = 4;
+                return count > 0 ? ValidOpsBuffer[UnityEngine.Random.Range(0, count)] : UnityEngine.Random.Range(2, 4);
             }
 
-            var ops2 = new List<int> { 2, 3 };
-            if (mul) ops2.Add(0);
-            if (div) ops2.Add(1);
-            return ops2[UnityEngine.Random.Range(0, ops2.Count)];
-        }
+            ValidOpsBuffer[count++] = 2;
+            ValidOpsBuffer[count++] = 3;
+            if (mul) ValidOpsBuffer[count++] = 0;
+            if (div) ValidOpsBuffer[count++] = 1;
+            if (exp) ValidOpsBuffer[count++] = 4;
 
-        private static (int num1, int num2, int answer) GenerateMultiplication()
-        {
-            var pool = new (int, int, int)[]
-            {
-                (1,1,1),(1,2,2),(1,3,3),(1,4,4),(1,5,5),(1,6,6),(1,7,7),(1,8,8),(1,9,9),
-                (2,1,2),(2,2,4),(2,3,6),(2,4,8),(3,1,3),(3,2,6),(3,3,9),(4,1,4),(4,2,8),
-                (5,1,5),(6,1,6),(7,1,7),(8,1,8),(9,1,9)
-            };
-            return pool[UnityEngine.Random.Range(0, pool.Length)];
-        }
-
-        private static (int num1, int num2, int answer) GenerateDivision()
-        {
-            var pool = new (int, int, int)[]
-            {
-                (1,1,1),(2,1,2),(2,2,1),(3,1,3),(3,3,1),(4,1,4),(4,2,2),(4,4,1),(5,1,5),(5,5,1),
-                (6,1,6),(6,2,3),(6,3,2),(6,6,1),(7,1,7),(7,7,1),(8,1,8),(8,2,4),(8,4,2),(8,8,1),
-                (9,1,9),(9,3,3),(9,9,1)
-            };
-            return pool[UnityEngine.Random.Range(0, pool.Length)];
+            return ValidOpsBuffer[UnityEngine.Random.Range(0, count)];
         }
     }
 }

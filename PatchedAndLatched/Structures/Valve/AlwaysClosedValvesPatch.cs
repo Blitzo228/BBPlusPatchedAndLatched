@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace PatchedAndLatched.Patches
 {
@@ -12,7 +10,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void ForceValvesClosed(Structure_SteamValves __instance)
         {
-            if (!PatchedAndLatchedPlugin.AlwaysClosedValves.Value) return;
+            if (!PatchedAndLatchedPlugin.AlwaysClosedValves!.Value) return;
 
             var field = typeof(Structure_SteamValves).GetField("generatedValves",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);

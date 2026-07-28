@@ -1,6 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
-using UnityEngine;
 
 namespace PatchedAndLatched.Patches
 {
@@ -13,7 +11,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void ModifySpeed(Jumprope __instance)
         {
-            if (!PatchedAndLatchedPlugin.FasterJumpropeEnabled.Value) return;
+            if (!(PatchedAndLatchedPlugin.FasterJumpropeEnabled!.Value)) return;
 
             var ropeDelayField = Traverse.Create(__instance).Field("ropeDelay");
             var ropeTimeField = Traverse.Create(__instance).Field("ropeTime");

@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "80GTYVg5qjQ=",
+  "dgSpecHash": "DV6il1aXs+8=",
   "success": true,
-  "projectFilePath": "C:\\Users\\User\\source\\repos\\PatchedandLatched\\PatchedandLatched.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/home/denyscrasav4ik/BBPlusPatchedAndLatched-2.0/PatchedandLatched.csproj",
+  "expectedPackageFiles": [
+    "/home/denyscrasav4ik/.nuget/packages/netstandard.library.ref/2.1.0/netstandard.library.ref.2.1.0.nupkg.sha512"
+  ],
   "logs": []
 }

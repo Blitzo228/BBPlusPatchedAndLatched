@@ -1,50 +1,42 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches
 {
-    public class LethalTouch : MonoBehaviour
-    {
-        private NPC? _npc;
-
-        public void Initialize(NPC npc)
-        {
-            _npc = npc;
-            transform.SetParent(npc.transform);
-            SphereCollider collider = gameObject.AddComponent<SphereCollider>();
-            collider.isTrigger = true;
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (!enabled) return;
-            if (!other.CompareTag("Player")) return;
-            if (_npc == null) return;
-
-            Baldi? baldi = _npc.ec?.GetBaldi();
-            if (baldi == null && _npc is Baldi b)
-                baldi = b;
-
-            if (baldi == null) return;
-
-            var core = Singleton<CoreGameManager>.Instance;
-            if (core != null)
-                core.EndGame(other.transform, baldi);
-        }
-    }
-
-    [HarmonyPatch(typeof(NPC), "Initialize")]
+    [HarmonyPatch(typeof(NPC))]
     internal static class LethalTouchPatch
     {
+        [HarmonyPatch("VirtualOnTriggerEnter")]
         [HarmonyPostfix]
-        private static void AddLethalTouch(NPC __instance)
+        private static void VirtualOnTriggerEnterPostfix(NPC __instance, Entity otherEntity, Collider other)
         {
-            if (!PatchedAndLatchedPlugin.LethalTouchEnabled.Value) return;
-            if (__instance.GetComponent<LethalTouch>() == null)
+            CheckLethalTouch(__instance, otherEntity, other);
+        }
+
+        [HarmonyPatch("VirtualOnTriggerStay")]
+        [HarmonyPostfix]
+        private static void VirtualOnTriggerStayPostfix(NPC __instance, Entity otherEntity, Collider other)
+        {
+            CheckLethalTouch(__instance, otherEntity, other);
+        }
+
+        private static void CheckLethalTouch(NPC npc, Entity otherEntity, Collider other)
+        {
+            if (!PatchedAndLatchedPlugin.LethalTouchEnabled!.Value) return;
+
+            if (other.CompareTag("Player") || (otherEntity != null && otherEntity.CompareTag("Player")))
             {
-                LethalTouch lethal = __instance.gameObject.AddComponent<LethalTouch>();
-                lethal.Initialize(__instance);
+                Baldi? baldi = npc.ec?.GetBaldi();
+                if (baldi == null && npc is Baldi b)
+                    baldi = b;
+
+                if (baldi == null) return;
+
+                var core = Singleton<CoreGameManager>.Instance;
+                if (core != null)
+                {
+                    core.EndGame(other.transform, baldi);
+                }
             }
         }
     }

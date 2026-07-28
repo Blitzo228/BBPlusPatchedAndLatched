@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +18,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void CheckIfPenultimateElevator(Elevator __instance, ElevatorState state, EnvironmentController ___ec)
         {
-            if (!PatchedAndLatchedPlugin.FinalLevelPreEndingEnabled.Value) return;
+            if (!PatchedAndLatchedPlugin.FinalLevelPreEndingEnabled!.Value) return;
             if (_triggered) return;
             if (Singleton<CoreGameManager>.Instance.currentMode == Mode.Free) return;
             if (___ec == null) return;

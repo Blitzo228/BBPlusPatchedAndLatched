@@ -1,11 +1,9 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System.Collections;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches
 {
-    // Компонент для управления анимацией растворения
     public class DissolveController : MonoBehaviour
     {
         private Pickup? _pickup;
@@ -33,16 +31,30 @@ namespace PatchedAndLatched.Patches
             if (sr != null)
             {
                 Color orig = sr.color;
-                float duration = PatchedAndLatchedPlugin.PickupDissolveDuration.Value;
+                Sprite dissolvingSprite = sr.sprite;
+                Sprite targetSprite = sr.sprite;
+
+                float duration = PatchedAndLatchedPlugin.PickupDissolveDuration!.Value;
                 float timer = 0f;
+
                 while (timer < duration)
                 {
                     timer += Time.deltaTime;
                     float alpha = Mathf.Lerp(1f, 0f, timer / duration);
                     sr.color = new Color(orig.r, orig.g, orig.b, alpha);
+
+                    if (sr.sprite != dissolvingSprite)
+                    {
+                        targetSprite = sr.sprite;
+                        sr.sprite = dissolvingSprite;
+                    }
+
                     yield return null;
                 }
+
                 sr.color = new Color(orig.r, orig.g, orig.b, 0f);
+
+                sr.sprite = targetSprite;
             }
 
             if (_pickup != null)
@@ -50,6 +62,11 @@ namespace PatchedAndLatched.Patches
                 _pickup.gameObject.SetActive(false);
                 if (_pickup.icon != null)
                     _pickup.icon.spriteRenderer.enabled = false;
+
+                if (sr != null)
+                {
+                    sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 1f);
+                }
             }
 
             _isRunning = false;
@@ -64,7 +81,7 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool PrefixHide(Pickup __instance, bool hidden)
         {
-            if (!PatchedAndLatchedPlugin.EnablePickupDissolve.Value) return true;
+            if (!PatchedAndLatchedPlugin.EnablePickupDissolve!.Value) return true;
             if (!hidden) return true;
 
             if (__instance.GetComponent<DissolveController>() != null)
@@ -72,7 +89,7 @@ namespace PatchedAndLatched.Patches
 
             var controller = __instance.gameObject.AddComponent<DissolveController>();
             controller.StartDissolve(__instance);
-            return false; 
+            return false;
         }
     }
 }
