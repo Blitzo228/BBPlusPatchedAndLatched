@@ -107,7 +107,6 @@ namespace PatchedAndLatched.Patches.OldTheTest
             }
         }
 
-        // Исправленная сигнатура
         public override void OnStateTriggerEnter(Entity otherEntity, Collider other, bool validCollision)
         {
             base.OnStateTriggerEnter(otherEntity, other, validCollision);
