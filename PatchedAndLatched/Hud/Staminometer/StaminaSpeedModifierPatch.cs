@@ -21,7 +21,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Start")]
         public static void Start_Postfix(PlayerMovement __instance)
         {
-            if (!PatchedAndLatchedPlugin.StaminaSpeedModifier!.Value) return;
             if (_initialized) return;
 
             _originalWalkSpeed = __instance.walkSpeed;
@@ -36,7 +35,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Update")]
         public static void Update_Prefix(PlayerMovement __instance)
         {
-            if (!PatchedAndLatchedPlugin.StaminaSpeedModifier!.Value) return;
             if (!_initialized) return;
 
             float staminaRatio = __instance.stamina / __instance.StaminaMax;

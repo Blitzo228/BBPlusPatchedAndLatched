@@ -25,8 +25,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("StartSweeping")]
         public static void StartSweeping_Postfix(GottaSweep __instance)
         {
-            if (!PatchedAndLatchedPlugin.GottaSweepAcceleration!.Value) return;
-
             if (_currentCoroutine != null)
             {
                 __instance.StopCoroutine(_currentCoroutine);

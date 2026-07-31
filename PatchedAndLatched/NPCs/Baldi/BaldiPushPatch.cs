@@ -17,8 +17,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool OnCaughtPlayer(Baldi __instance, PlayerManager player)
         {
-            if (!PatchedAndLatchedPlugin.EnableBaldiPushBack!.Value) return true;
-
             if (_pushCount >= PatchedAndLatchedPlugin.BaldiMaxPushes!.Value)
             {
                 _pushCount = 0;
@@ -61,9 +59,7 @@ namespace PatchedAndLatched.Patches
 
         private static void PlaySound(string name, Vector3 position, Baldi? baldi = null)
         {
-            SoundObject sound = Resources.Load<SoundObject>("Sounds/" + name);
-            if (sound == null) sound = Resources.Load<SoundObject>(name);
-            if (sound == null) sound = Resources.FindObjectsOfTypeAll<SoundObject>().FirstOrDefault(s => s.name == name);
+            SoundObject sound = Resources.FindObjectsOfTypeAll<SoundObject>().FirstOrDefault(s => s.name == name);
 
             if (sound == null || sound.soundClip == null)
             {
@@ -84,14 +80,9 @@ namespace PatchedAndLatched.Patches
 
 
             if (name == "BAL_Ohh" && baldi != null)
-            {
                 baldi.AudMan.PlaySingle(sound);
-            }
             else
-            {
-
                 Singleton<CoreGameManager>.Instance.audMan.PlaySingle(sound);
-            }
         }
     }
 }

@@ -10,7 +10,7 @@ namespace PatchedAndLatched.Patches
 
         static MysteryRoomMapPatch()
         {
-            _mysteryMat = Resources.Load<Material>("MapBG_Mystery") ?? Resources.Load<Material>("Materials/MapBG_Mystery");
+            _mysteryMat = Resources.Load<Material>("Materials/MapBG_Mystery");
         }
 
         private static RoomController? GetRoom(MysteryRoom instance)
@@ -38,8 +38,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void AfterUpdateSetup(MysteryRoom __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableMysteryRoomMap!.Value) return;
-
             var room = GetRoom(__instance);
             if (room == null) return;
 
@@ -53,8 +51,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void Begin(MysteryRoom __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableMysteryRoomMap!.Value) return;
-
             var room = GetRoom(__instance);
             if (room == null) return;
 
@@ -65,8 +61,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void End(MysteryRoom __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableMysteryRoomMap!.Value) return;
-
             var room = GetRoom(__instance);
             if (room == null) return;
 

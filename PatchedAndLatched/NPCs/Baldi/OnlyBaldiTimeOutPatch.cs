@@ -15,7 +15,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("AllNotebooks")]
         public static void AllNotebooks_Postfix(BaseGameManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.OnlyBaldiEveryFloor!.Value) return;
             if (_timeOutStarted) return;
 
             if (_ecField == null)

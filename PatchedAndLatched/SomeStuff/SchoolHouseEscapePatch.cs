@@ -11,7 +11,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("AllNotebooks")]
         public static void AllNotebooks_Postfix(BaseGameManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.SchoolHouseEscape!.Value) return;
             if (_escapePlayed) return;
 
             if (__instance.InPitstop()) return;
@@ -24,8 +23,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Initialize")]
         public static void Initialize_Prefix(BaseGameManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.SchoolHouseEscape!.Value) return;
-
             _escapePlayed = false;
         }
     }

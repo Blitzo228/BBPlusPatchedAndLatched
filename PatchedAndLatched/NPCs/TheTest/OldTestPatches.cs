@@ -30,9 +30,6 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static bool Prefix(LookAtGuy __instance, TimeScaleModifier ___timeScale, bool ___fleeing, QuickExplosion ___explosionPrefab, Sprite ___crumbledSprite, Transform ___billboardedTransform, Transform ___headTransform, AnimatedSpriteRotator ___spriteRotator, SpriteRenderer ___sprite, AudioManager ___blindAudMan, SoundObject ___audBlindStart, SoundObject ___audBlindLoop, HudGauge ___gauge, Sprite ___gaugeSprite, float ___fogTime)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value)
-                return true;
-
             __instance.FreezeNPCs(false);
             __instance.Navigator.maxSpeed = 0f;
 
@@ -83,9 +80,6 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static bool Prefix(LookAtGuy __instance, ref PlayerManager player, int ___currentSpeedLevel, float[] ___speedLevels, float ___moveSpeed)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value)
-                return true;
-
             __instance.behaviorStateMachine.CurrentNavigationState.priority = 0;
             __instance.behaviorStateMachine.ChangeNavigationState(new NavigationState_TargetPlayer(__instance, 127, player.transform.position, true));
 
@@ -115,9 +109,6 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static bool Prefix(LookAtGuy __instance, int ___currentSpeedLevel)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value)
-                return true;
-
             __instance.behaviorStateMachine.CurrentNavigationState.priority = 0;
             __instance.behaviorStateMachine.ChangeNavigationState(new NavigationState_DoNothing(__instance, 127, true));
 
@@ -136,9 +127,6 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static bool Prefix(ref bool freeze, LookAtGuy __instance, AudioManager ___audMan, AudioManager ___rumbleAudMan, TimeScaleModifier ___timeScale, SoundObject ___audLoop, SoundObject ___audSighted)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value)
-                return true;
-
             var freezingField = AccessTools.Field(typeof(LookAtGuy), "freezing");
 
             if (freeze)
@@ -186,9 +174,6 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static void Postfix(LookAtGuy __instance, Transform ___headTransform, TimeScaleModifier ___timeScale)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value)
-                return;
-
             __instance.Navigator.Initialize(__instance.ec);
             __instance.behaviorStateMachine.ChangeState(new LookAt_OldInactive(__instance, ___headTransform));
 
@@ -213,9 +198,6 @@ namespace PatchedAndLatched.Patches.OldTheTest
     {
         private static bool Prefix(LookAtGuy __instance, TimeScaleModifier ___timeScale, AnimatedSpriteRotator ___spriteRotator, SpriteRenderer ___sprite, Transform ___headTransform, AudioManager ___blindAudMan)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldTestBehavior!.Value)
-                return true;
-
             var hall = __instance.ec.mainHall;
             var cell = hall.cells[Random.Range(0, hall.cells.Count)];
             __instance.transform.position = cell.FloorWorldPosition + Vector3.up * 5f;

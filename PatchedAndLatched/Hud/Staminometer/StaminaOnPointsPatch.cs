@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 
 namespace PatchedAndLatched.Patches
 {
@@ -10,7 +9,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("AddPoints", new[] { typeof(int), typeof(int), typeof(bool), typeof(bool), typeof(bool) })]
         public static void AddPoints_Postfix(int points, int player, bool playAnimation, bool includeInLevelTotal, bool multiply)
         {
-            if (!PatchedAndLatchedPlugin.StaminaOnPoints!.Value) return;
             if (points <= 0) return;
 
             PlayerManager pm = Singleton<CoreGameManager>.Instance.GetPlayer(player);

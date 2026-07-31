@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System.Reflection;
 
 namespace PatchedAndLatched.Patches
@@ -14,7 +13,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Update")]
         public static void Update_Prefix(Jumprope __instance)
         {
-            if (!PatchedAndLatchedPlugin.BootsSnapRope!.Value) return;
             if (__instance.player == null) return;
 
             bool hasBootsEffect = false;
@@ -59,7 +57,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Jump")]
         public static bool Jump_Prefix(Jumprope __instance)
         {
-            if (!PatchedAndLatchedPlugin.BootsSnapRope!.Value) return true;
             if (__instance.player == null) return true;
 
             bool hasBootsEffect = false;

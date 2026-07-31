@@ -10,8 +10,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void MakeAllKnowing(Principal __instance)
         {
-            if (!PatchedAndLatchedPlugin.AllKnowingPrincipalEnabled!.Value) return;
-
             Traverse.Create(__instance).Field("allKnowing").SetValue(true);
 
             PlayerManager player = CoreGameManager.Instance.GetPlayer(0);

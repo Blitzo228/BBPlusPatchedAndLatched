@@ -22,7 +22,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void OverrideItemLimitInitialize(FieldTripBaseRoomFunction __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableCampingItemLimit!.Value) return;
             if (_itemLimitField == null) return;
             if (FieldTripNametagState.UsedNametag) return;
 
@@ -33,7 +32,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void OverrideItemLimitStartMinigame(FieldTripBaseRoomFunction __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableCampingItemLimit!.Value) return;
             if (_itemLimitField == null) return;
             if (FieldTripNametagState.UsedNametag) return;
 
@@ -44,7 +42,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool PrefixItemCollected(FieldTripBaseRoomFunction __instance, Pickup pickup, int player)
         {
-            if (!PatchedAndLatchedPlugin.EnableCampingItemLimit!.Value) return true;
             if (FieldTripNametagState.UsedNametag) return true;
 
             if (_itemsCollectedField != null)

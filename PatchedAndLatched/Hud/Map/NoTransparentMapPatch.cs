@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches
@@ -14,8 +13,6 @@ namespace PatchedAndLatched.Patches
             if (opaqueMat == null)
             {
                 Shader shader = Shader.Find("Sprites/Default");
-                if (shader == null) shader = Shader.Find("UI/Default");
-                if (shader == null) shader = Shader.Find("Standard");
 
                 opaqueMat = new Material(shader);
 
@@ -34,8 +31,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Initialize")]
         public static void Initialize_Postfix(Map __instance)
         {
-            if (!PatchedAndLatchedPlugin.NoTransparentMap!.Value) return;
-
             CreateOpaqueMaterial();
 
             for (int i = 0; i < __instance.size.x; i++)
@@ -68,8 +63,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Update")]
         public static void Update_Postfix(Map __instance)
         {
-            if (!PatchedAndLatchedPlugin.NoTransparentMap!.Value) return;
-
             for (int i = 0; i < __instance.size.x; i++)
             {
                 for (int j = 0; j < __instance.size.z; j++)
@@ -108,8 +101,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Find")]
         public static void Find_Postfix(Map __instance, int posX, int posZ, int bin, RoomController room)
         {
-            if (!PatchedAndLatchedPlugin.NoTransparentMap!.Value) return;
-
             MapTile tile = __instance.tiles[posX, posZ];
             if (tile != null)
             {
@@ -129,8 +120,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch(typeof(MapTile), "Reveal")]
         public static void MapTile_Reveal_Postfix(MapTile __instance)
         {
-            if (!PatchedAndLatchedPlugin.NoTransparentMap!.Value) return;
-
             var renderer = __instance.SpriteRenderer;
             if (renderer != null)
             {

@@ -10,9 +10,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static void ChangeAmbientDarkness(EnvironmentController __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableCustomLightRadius!.Value)
-                return;
-
             float darkness = PatchedAndLatchedPlugin.AmbientDarknessLevel!.Value;
             __instance.standardDarkLevel = new Color(darkness, darkness, darkness, 1f);
         }
@@ -20,9 +17,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static void ModifyLightStrength(ref int strength)
         {
-            if (!PatchedAndLatchedPlugin.EnableCustomLightRadius!.Value)
-                return;
-
             float multiplier = PatchedAndLatchedPlugin.CustomLightRadiusMultiplier!.Value;
 
             strength = Mathf.Max(1, Mathf.RoundToInt(strength * multiplier));

@@ -17,7 +17,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Use")]
         private static void Prefix(ITM_YTPs __instance, ref int __state)
         {
-            if (!PatchedAndLatchedPlugin.EnableYTPSMultiplier!.Value) return;
             if (_valueField == null) return;
 
             int original = (int)_valueField.GetValue(__instance);
@@ -31,7 +30,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Use")]
         private static void Postfix(ITM_YTPs __instance, int __state)
         {
-            if (!PatchedAndLatchedPlugin.EnableYTPSMultiplier!.Value) return;
             if (_valueField == null) return;
             _valueField.SetValue(__instance, __state);
         }

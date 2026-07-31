@@ -17,11 +17,10 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void IncreaseSpeed(LockdownDoor __instance)
         {
-            if (PatchedAndLatchedPlugin.LockdownDoorSpeedMultiplier == null) return;
             if (_speedField == null) return;
 
             float currentSpeed = (float)_speedField.GetValue(__instance);
-            float newSpeed = currentSpeed * PatchedAndLatchedPlugin.LockdownDoorSpeedMultiplier.Value;
+            float newSpeed = currentSpeed * PatchedAndLatchedPlugin.LockdownDoorSpeedMultiplier!.Value;
             _speedField.SetValue(__instance, newSpeed);
         }
     }

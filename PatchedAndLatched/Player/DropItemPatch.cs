@@ -10,9 +10,11 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool Prefix(ItemManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableDropItem!.Value) return true;
+            bool isDropPressed = PatchedAndLatchedPlugin.IsRewiredCompatInstalled
+                ? InputManager.Instance.GetDigitalInput("DropItem", true)
+                : Input.GetKeyDown(KeyCode.R);
 
-            if (Input.GetKeyDown(KeyCode.R))
+            if (isDropPressed)
             {
                 ItemObject item = __instance.items[__instance.selectedItem];
                 if (item != __instance.nothing)

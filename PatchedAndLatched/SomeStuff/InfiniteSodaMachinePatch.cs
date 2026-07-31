@@ -8,8 +8,6 @@ namespace PatchedAndLatched.Patches
     {
         private static bool Prefix(ref int ___usesLeft)
         {
-            if (!PatchedAndLatchedPlugin.InfiniteSodaMachine!.Value) return true;
-
             ___usesLeft++;
             return true;
         }

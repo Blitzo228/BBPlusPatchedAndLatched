@@ -10,8 +10,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void IncreaseBringCount(PitstopGameManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableJohnnyBringCount!.Value) return;
-
             int bringCount = PatchedAndLatchedPlugin.JohnnyBringItemCount!.Value;
             if (bringCount <= 0) return;
 

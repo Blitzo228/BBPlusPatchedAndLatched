@@ -82,7 +82,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static void ClearSeed(TMP_Text ___tmp)
         {
-            if (!PatchedAndLatchedPlugin.EnableSeedLetters!.Value) return;
             SeedHelper.CurrentSeed = "";
             if (___tmp != null && ___tmp.font != null)
             {
@@ -94,7 +93,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool UpdateTextPatch(SeedInput __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableSeedLetters!.Value) return true;
             SeedHelper.UpdateSeedText(__instance);
             return false;
         }
@@ -103,7 +101,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool ChangeModePatch(SeedInput __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableSeedLetters!.Value) return true;
             bool useSeed = Traverse.Create(__instance).Field("useSeed").GetValue<bool>();
             useSeed = !useSeed;
             Traverse.Create(__instance).Field("useSeed").SetValue(useSeed);
@@ -115,8 +112,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool UpdatePatch(SeedInput __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableSeedLetters!.Value) return true;
-
             TMP_Text tmp = Traverse.Create(__instance).Field("tmp").GetValue<TMP_Text>();
             bool useSeed = Traverse.Create(__instance).Field("useSeed").GetValue<bool>();
             SeedHelper.SeedIsUsed = useSeed;
@@ -164,20 +159,34 @@ namespace PatchedAndLatched.Patches
     {
         [HarmonyPatch("Start")]
         [HarmonyPostfix]
-        private static void ShowSeedInElevator(ElevatorScreen __instance)
+        private static void StyleSeedInElevator(ElevatorScreen __instance, TMP_Text ___seedText)
         {
-            if (!PatchedAndLatchedPlugin.EnableSeedLetters!.Value) return;
             if (!SeedHelper.SeedIsUsed)
                 SeedHelper.GenerateRandomSeed();
 
-            TMP_Text seedText = Traverse.Create(__instance).Field("seedText").GetValue<TMP_Text>();
-            if (seedText != null)
+            if (___seedText != null)
             {
-                seedText.enableWordWrapping = true;
-                seedText.overflowMode = TextOverflowModes.Overflow;
-                seedText.alignment = TextAlignmentOptions.MidlineLeft;
-                seedText.transform.localPosition = new Vector3(67.45f, 94.25f, 0f);
-                seedText.text = SeedHelper.CurrentSeed;
+                ___seedText.enableWordWrapping = true;
+                ___seedText.overflowMode = TextOverflowModes.Overflow;
+                ___seedText.alignment = TextAlignmentOptions.MidlineLeft;
+                ___seedText.transform.localPosition = new Vector3(67.45f, 94.25f, 0f);
+            }
+        }
+
+        [HarmonyPatch("Update")]
+        [HarmonyPostfix]
+        public static void UpdateSeedTextInElevator(ElevatorScreen __instance, TMP_Text ___seedText)
+        {
+            if (___seedText == null) return;
+
+            CoreGameManager instance = Singleton<CoreGameManager>.Instance;
+            if (instance != null && instance.sceneObject != null && instance.sceneObject.levelAsset != null && !instance.sceneObject.levelTitle.ToUpper().Contains("PIT"))
+            {
+                ___seedText.text = "Pre-Made";
+            }
+            else
+            {
+                ___seedText.text = SeedHelper.CurrentSeed;
             }
         }
     }
@@ -189,7 +198,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static void UseCustomSeed(LevelGenerator __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableSeedLetters!.Value) return;
             if (!SeedHelper.SeedIsUsed)
                 SeedHelper.GenerateRandomSeed();
 
@@ -211,17 +219,32 @@ namespace PatchedAndLatched.Patches
 
         [HarmonyPatch("OnEnable")]
         [HarmonyPostfix]
-        private static void ShowSeedInPauseMenu(PauseReset __instance)
+        private static void ShowSeedInPauseMenu(PauseReset __instance, TMP_Text ___seedText)
         {
-            if (!PatchedAndLatchedPlugin.EnableSeedLetters!.Value) return;
-            if (!SeedHelper.SeedIsUsed) return;
+            if (!SeedHelper.SeedIsUsed || ___seedText == null) return;
 
-            TMP_Text seedText = Traverse.Create(__instance).Field("seedText").GetValue<TMP_Text>();
-            if (seedText != null)
+            CoreGameManager instance = Singleton<CoreGameManager>.Instance;
+            bool isPreMadeLevel = instance != null && instance.sceneObject != null && instance.sceneObject.levelAsset != null && !instance.sceneObject.levelTitle.ToUpper().Contains("PIT");
+
+            if (isPreMadeLevel)
             {
-                seedText.text = SeedHelper.CurrentSeed;
-                seedText.enableWordWrapping = true;
-                seedText.overflowMode = TextOverflowModes.Overflow;
+                ___seedText.gameObject.SetActive(false);
+                if (___seedText.transform.parent != null && ___seedText.transform.parent.childCount > 0)
+                {
+                    ___seedText.transform.parent.GetChild(0).gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                ___seedText.gameObject.SetActive(true);
+                if (___seedText.transform.parent != null && ___seedText.transform.parent.childCount > 0)
+                {
+                    ___seedText.transform.parent.GetChild(0).gameObject.SetActive(true);
+                }
+
+                ___seedText.text = SeedHelper.CurrentSeed;
+                ___seedText.enableWordWrapping = true;
+                ___seedText.overflowMode = TextOverflowModes.Overflow;
 
                 if (__instance.gameObject.GetComponent<SeedPauseUpdater>() == null)
                 {
@@ -239,8 +262,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void SaveSeed()
         {
-            if (!PatchedAndLatchedPlugin.EnableSeedLetters!.Value) return;
-
             if (SeedHelper.SeedIsUsed && !string.IsNullOrEmpty(SeedHelper.CurrentSeed))
             {
                 if (Singleton<PlayerFileManager>.Instance != null && Singleton<PlayerFileManager>.Instance.savedGameData != null)

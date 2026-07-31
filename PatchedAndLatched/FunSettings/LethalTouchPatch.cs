@@ -22,8 +22,6 @@ namespace PatchedAndLatched.Patches
 
         private static void CheckLethalTouch(NPC npc, Entity otherEntity, Collider other)
         {
-            if (!PatchedAndLatchedPlugin.LethalTouchEnabled!.Value) return;
-
             if (other.CompareTag("Player") || (otherEntity != null && otherEntity.CompareTag("Player")))
             {
                 Baldi? baldi = npc.ec?.GetBaldi();

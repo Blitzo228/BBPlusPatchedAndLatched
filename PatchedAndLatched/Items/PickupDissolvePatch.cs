@@ -81,7 +81,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool PrefixHide(Pickup __instance, bool hidden)
         {
-            if (!PatchedAndLatchedPlugin.EnablePickupDissolve!.Value) return true;
             if (!hidden) return true;
 
             if (__instance.GetComponent<DissolveController>() != null)

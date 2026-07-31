@@ -10,8 +10,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Generate")]
         public static void Generate_Prefix(Structure_ConveyorBelt __instance)
         {
-            if (!PatchedAndLatchedPlugin.OldConveyorBelt!.Value) return;
-
             var field = typeof(Structure_ConveyorBelt).GetField("beltSpeed",
                 BindingFlags.NonPublic | BindingFlags.Instance);
             if (field != null) field.SetValue(__instance, 12.5f);
@@ -21,8 +19,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("BuildBelt")]
         public static void BuildBelt_Postfix(Structure_ConveyorBelt __instance)
         {
-            if (!PatchedAndLatchedPlugin.OldConveyorBelt!.Value) return;
-
             var builtBeltsField = typeof(Structure_ConveyorBelt).GetField("builtBelts",
                 BindingFlags.NonPublic | BindingFlags.Instance);
 

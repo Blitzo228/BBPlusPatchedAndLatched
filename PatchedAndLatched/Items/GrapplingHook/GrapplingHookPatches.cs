@@ -16,28 +16,52 @@ namespace PatchedAndLatched.Patches
     {
         private void OnCollisionEnter(Collision collision)
         {
-            CheckForBalder(collision.collider);
+            CheckCollisions(collision.collider);
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            CheckForBalder(other);
+            CheckCollisions(other);
         }
 
-        private void CheckForBalder(Collider collider)
+        private void CheckCollisions(Collider collider)
         {
             if (collider == null) return;
-            if (!PatchedAndLatchedPlugin.GrapplingHookBreakBalder!.Value) return;
 
-            var balder = collider.GetComponentInParent<Balder_Entity>();
-            if (balder != null && !balder.Crumbled)
+            if (PatchedAndLatchedPlugin.GrapplingHookBreakBalder!.Value)
             {
-                balder.Crumble(playSound: true);
-
-                var hook = GetComponent<ITM_GrapplingHook>();
-                if (hook != null)
+                var balder = collider.GetComponentInParent<Balder_Entity>();
+                if (balder != null && !balder.Crumbled)
                 {
-                    EndHook(hook);
+                    balder.Crumble(playSound: true);
+
+                    var hook = GetComponent<ITM_GrapplingHook>();
+                    if (hook != null)
+                    {
+                        EndHook(hook);
+                    }
+                    return;
+                }
+            }
+
+            if (PatchedAndLatchedPlugin.GrapplingHookPushNPCs!.Value)
+            {
+                var npc = collider.GetComponentInParent<NPC>();
+                if (npc != null)
+                {
+                    var comp = GetComponent<GrapplingHookExtraComponent>();
+                    if (comp != null && !comp.interactedTransforms.Contains(npc.transform))
+                    {
+                        Vector3 toNpc = npc.transform.position - transform.position;
+                        Vector3 sideDir = transform.right;
+                        if (Vector3.Dot(toNpc, transform.right) < 0f)
+                        {
+                            sideDir = -transform.right;
+                        }
+
+                        npc.Navigator.Entity.AddForce(new Force(sideDir, 15f, -12f));
+                        comp.interactedTransforms.Add(npc.transform);
+                    }
                 }
             }
         }
@@ -128,6 +152,26 @@ namespace PatchedAndLatched.Patches
 
             if (hit.collider != null)
             {
+                if (PatchedAndLatchedPlugin.GrapplingHookPushNPCs!.Value)
+                {
+                    var npc = hit.collider.GetComponentInParent<NPC>();
+                    if (npc != null && !comp.interactedTransforms.Contains(npc.transform))
+                    {
+                        Vector3 toNpc = npc.transform.position - __instance.transform.position;
+                        Vector3 sideDir = __instance.transform.right;
+                        if (Vector3.Dot(toNpc, __instance.transform.right) < 0f)
+                        {
+                            sideDir = -__instance.transform.right;
+                        }
+
+                        npc.Navigator.Entity.AddForce(new Force(sideDir, 15f, -12f));
+                        comp.interactedTransforms.Add(npc.transform);
+
+                        __instance.transform.position += __instance.transform.forward * ___speed * ___ec.EnvironmentTimeScale;
+                        return false;
+                    }
+                }
+
                 var door = hit.collider.GetComponentInParent<Door>();
                 if (door != null && !comp.interactedTransforms.Contains(door.transform))
                 {
@@ -228,29 +272,18 @@ namespace PatchedAndLatched.Patches
         }
     }
 
-    [HarmonyPatch(typeof(NPC), "EntityTriggerEnter")]
-    internal static class GotHitByGrapplingHook
-    {
-        private static void Prefix(NPC __instance, Collider other)
-        {
-            if (PatchedAndLatchedPlugin.GrapplingHookPushNPCs!.Value && other.CompareTag("GrapplingHook"))
-            {
-                __instance.Navigator.Entity.AddForce(new Force(other.transform.right, 15f, -12f));
-            }
-        }
-    }
-
     [HarmonyPatch(typeof(Gum), "EntityTriggerEnter")]
     internal static class GumGotHitByGrapplingHook
     {
-        private static bool Prefix(Gum __instance, Collider other, bool ___flying, AudioManager ___audMan, SoundObject ___audSplat, Beans ___beans)
+        private static bool Prefix(Gum __instance, Entity otherEntity, Collider other, bool validCollision, bool ___flying, AudioManager ___audMan, SoundObject ___audSplat)
         {
-            if (PatchedAndLatchedPlugin.GrapplingHookHitGum!.Value) return true;
+            if (!PatchedAndLatchedPlugin.GrapplingHookHitGum!.Value) return true;
+            if (!validCollision || !___flying) return true;
 
-            if (___flying && other.CompareTag("GrapplingHook"))
+            if (other.CompareTag("GrapplingHook") || otherEntity?.GetComponent<ITM_GrapplingHook>() != null || other.GetComponentInParent<ITM_GrapplingHook>() != null)
             {
                 __instance.Hide();
-                ___beans.GumHit(__instance, false);
+                __instance.beans.GumHit(__instance, false);
                 ___audMan.FlushQueue(true);
                 ___audMan.PlaySingle(___audSplat);
                 return false;

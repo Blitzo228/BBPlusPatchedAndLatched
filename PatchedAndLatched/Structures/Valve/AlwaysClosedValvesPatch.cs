@@ -10,8 +10,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void ForceValvesClosed(Structure_SteamValves __instance)
         {
-            if (!PatchedAndLatchedPlugin.AlwaysClosedValves!.Value) return;
-
             var field = typeof(Structure_SteamValves).GetField("generatedValves",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             if (field == null) return;

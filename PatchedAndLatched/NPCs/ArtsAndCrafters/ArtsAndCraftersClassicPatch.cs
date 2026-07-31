@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using System.Reflection;
-using PatchedAndLatched;
 
 namespace PatchedAndLatched.Patches
 {
@@ -12,8 +11,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("OnStateTriggerEnter")]
         public static bool OnStateTriggerEnter_Prefix(ArtsAndCrafters_Chasing __instance, Entity otherEntity, Collider other, bool validCollision)
         {
-            if (!PatchedAndLatchedPlugin.ClassicArtsAndCrafters!.Value) return true;
-
             if (other.CompareTag("Player"))
             {
                 var craftersField = typeof(ArtsAndCrafters_Chasing).GetField("crafters",
@@ -52,8 +49,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Update")]
         public static void Update_Prefix(ArtsAndCrafters_Teleporting __instance)
         {
-            if (!PatchedAndLatchedPlugin.ClassicArtsAndCrafters!.Value) return;
-
             var timeField = typeof(ArtsAndCrafters_Teleporting).GetField("time",
                 BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -75,8 +70,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Initialize")]
         public static void Initialize_Postfix(ArtsAndCrafters __instance)
         {
-            if (!PatchedAndLatchedPlugin.ClassicArtsAndCrafters!.Value) return;
-
             var runTimeField = typeof(ArtsAndCrafters).GetField("runTime",
                 BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -94,8 +87,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Update")]
         public static void Update_Prefix(ArtsAndCrafters_Ready __instance)
         {
-            if (!PatchedAndLatchedPlugin.ClassicArtsAndCrafters!.Value) return;
-
             var timeField = typeof(ArtsAndCrafters_Ready).GetField("time",
                 BindingFlags.NonPublic | BindingFlags.Instance);
 

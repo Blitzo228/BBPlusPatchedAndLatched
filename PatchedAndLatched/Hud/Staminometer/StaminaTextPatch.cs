@@ -9,7 +9,18 @@ namespace PatchedAndLatched.Patches
     {
         private static TMP_Text? _staminaText;
         private static TMP_Text? _restText;
-        private static float _updateTimer = 0f;
+
+        private static readonly string[] PercentStrings = PrecachePercentStrings();
+
+        private static string[] PrecachePercentStrings()
+        {
+            var cache = new string[101];
+            for (int i = 0; i <= 100; i++)
+            {
+                cache[i] = i + "%";
+            }
+            return cache;
+        }
 
         [HarmonyPatch("Awake")]
         [HarmonyPostfix]
@@ -32,7 +43,7 @@ namespace PatchedAndLatched.Patches
         {
             if (_staminaText != null) return;
 
-            var staminaNeedle = Traverse.Create(hud).Field<RectTransform>("staminaNeedle").Value;
+            var staminaNeedle = AccessTools.FieldRefAccess<HudManager, RectTransform>("staminaNeedle").Invoke(hud);
 
             Transform parentTransform = staminaNeedle != null ? staminaNeedle.parent : hud.Canvas().transform;
             if (parentTransform == null) return;
@@ -42,7 +53,6 @@ namespace PatchedAndLatched.Patches
 
             var go = new GameObject("StaminaPercentText");
             go.transform.SetParent(staminaTextParent, false);
-
             _staminaText = go.AddComponent<TextMeshProUGUI>();
             _staminaText.fontSize = 18;
             _staminaText.color = Color.green;
@@ -86,53 +96,41 @@ namespace PatchedAndLatched.Patches
             restRect.anchoredPosition = new Vector2(0f, yOffset);
             restRect.sizeDelta = new Vector2(200f, 30f);
 
-            var font = Resources.Load<TMP_FontAsset>("Fonts/COMIC_24_Pro SDF");
-            if (font != null)
-            {
-                _staminaText.font = font;
-                _restText.font = font;
-            }
-
             _restText.gameObject.SetActive(false);
 
-            UpdateText();
+            UpdateText(1f);
         }
 
-        [HarmonyPatch("Update")]
+        [HarmonyPatch("SetStaminaValue")]
         [HarmonyPostfix]
-        private static void UpdatePostfix(HudManager __instance)
+        private static void SetStaminaValuePostfix(float val)
         {
             if (!PatchedAndLatchedPlugin.EnableStaminaText!.Value) return;
-            if (_staminaText == null) return;
-
-            _updateTimer += Time.deltaTime;
-            if (_updateTimer < 0.2f) return;
-            _updateTimer = 0f;
-
-            UpdateText();
+            UpdateText(val);
         }
 
-        private static void UpdateText()
+        private static void UpdateText(float ratio)
         {
             if (_staminaText == null) return;
 
-            var player = Singleton<CoreGameManager>.Instance?.GetPlayer(0);
-            if (player == null) return;
+            int percent = Mathf.RoundToInt(Mathf.Max(0f, ratio) * 100f);
 
-            float stamina = player.plm.stamina;
-            float maxStamina = player.plm.StaminaMax;
+            if (percent >= 0 && percent <= 100)
+            {
+                _staminaText.text = PercentStrings[percent];
+            }
+            else
+            {
+                _staminaText.text = percent + "%";
+            }
 
-            float ratio = maxStamina > 0f ? Mathf.Clamp01(stamina / maxStamina) : 0f;
-            int percent = Mathf.RoundToInt(stamina / maxStamina * 100f);
-
-            _staminaText.text = percent + "%";
-
-            _staminaText.color = Color.Lerp(Color.red, Color.green, ratio);
+            float colorRatio = Mathf.Clamp01(ratio);
+            _staminaText.color = Color.Lerp(Color.red, Color.green, colorRatio);
 
             if (_restText != null)
             {
                 bool restTextEnabled = PatchedAndLatchedPlugin.EnableStaminaRestText!.Value;
-                _restText.gameObject.SetActive(restTextEnabled && stamina <= 0f);
+                _restText.gameObject.SetActive(restTextEnabled && ratio <= 0f);
             }
         }
     }

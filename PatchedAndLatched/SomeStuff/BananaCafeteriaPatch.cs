@@ -8,9 +8,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool Prefix(NanaPeelRoomFunction __instance)
         {
-            if (!PatchedAndLatchedPlugin.DisableBananasInCafeteria!.Value)
-                return true;
-
             var room = __instance.Room;
             if (room == null)
                 return true;

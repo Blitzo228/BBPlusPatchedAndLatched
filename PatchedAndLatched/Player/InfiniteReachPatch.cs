@@ -9,8 +9,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPatch("Start")]
         public static void Start_Postfix(PlayerManager __instance)
         {
-            if (!PatchedAndLatchedPlugin.InfiniteReach!.Value) return;
-
             foreach (var ext in __instance.pc.reachExtensions)
             {
                 if (ext.distance == PatchedAndLatchedPlugin.ReachDistance!.Value)

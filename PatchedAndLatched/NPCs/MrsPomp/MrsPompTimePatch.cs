@@ -19,7 +19,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static void OverrideClassTimeOnCatch(NoLateTeacher __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableMrsPompTimeControl!.Value) return;
             if (_classTimeField == null) return;
 
             float newTime = PatchedAndLatchedPlugin.MrsPompClassTime!.Value;

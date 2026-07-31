@@ -7,9 +7,6 @@ namespace PatchedAndLatched.Patches
     {
         public static bool Prefix(StandardDoor __instance, int player)
         {
-            if (!PatchedAndLatchedPlugin.ToggleableDoors!.Value)
-                return true;
-
             if (__instance.locked)
             {
                 __instance.audMan.PlaySingle(__instance.audDoorLocked);

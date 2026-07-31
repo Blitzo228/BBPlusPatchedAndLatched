@@ -10,7 +10,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void SetRandomJumps(Playtime __instance, Jumprope ___currentJumprope)
         {
-            if (!(PatchedAndLatchedPlugin.RandomJumpsEnabled!.Value)) return;
             if (___currentJumprope == null) return;
 
             int min = PatchedAndLatchedPlugin.MinJumps!.Value;

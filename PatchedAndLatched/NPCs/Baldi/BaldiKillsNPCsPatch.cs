@@ -32,7 +32,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPrefix]
         private static bool Prefix(Baldi_Chase __instance, Entity otherEntity, Collider other, bool validCollision)
         {
-            if (!PatchedAndLatchedPlugin.BaldiKillsNPCs!.Value) return true;
             if (!validCollision) return true;
             if (other.CompareTag("Player")) return true;
 
