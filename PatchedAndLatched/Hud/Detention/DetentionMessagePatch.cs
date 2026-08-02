@@ -1,4 +1,6 @@
 using HarmonyLib;
+using PatchedAndLatched;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
 
@@ -18,9 +20,7 @@ namespace PatchedAndLatched.Patches
             currentDetentionRoom = __instance;
             EnsureTextCreated();
             if (textObj != null)
-            {
                 textObj.SetActive(true);
-            }
         }
 
         private static void EnsureTextCreated()
@@ -29,6 +29,9 @@ namespace PatchedAndLatched.Patches
 
             HudManager? hud = Singleton<CoreGameManager>.Instance?.GetHud(0);
             if (hud == null || hud.Canvas() == null) return;
+            TMP_FontAsset? baseFont = Resources.Load<TMP_FontAsset>("Fonts/COMIC_24_Pro SDF");
+            if (baseFont == null)
+                baseFont = TMP_Settings.defaultFontAsset;
 
             textObj = new GameObject("DetentionMessageText", typeof(TextMeshProUGUI), typeof(DetentionTextUpdater));
             textObj.transform.SetParent(hud.Canvas().transform, false);
@@ -41,12 +44,25 @@ namespace PatchedAndLatched.Patches
             rect.sizeDelta = new Vector2(600f, 150f);
 
             detentionText = textObj.GetComponent<TMP_Text>();
+            detentionText.font = baseFont;
             detentionText.alignment = TextAlignmentOptions.Center;
             detentionText.color = Color.red;
             detentionText.fontSize = 28f;
+            detentionText.enableWordWrapping = true;
 
             DetentionTextUpdater updater = textObj.GetComponent<DetentionTextUpdater>();
             updater.textComponent = detentionText;
+            TryApplyCyrillic(detentionText);
+        }
+
+        private static void TryApplyCyrillic(TMP_Text text)
+        {
+            if (!PatchedAndLatchedPlugin.IsCyrillicPlusInstalled) return;
+            var type = System.Type.GetType("CyrillicPlus.BasePlugin, CyrillicPlus");
+            if (type == null) return;
+            var method = type.GetMethod("ProccessComponent", BindingFlags.Public | BindingFlags.Static);
+            if (method != null)
+                method.Invoke(null, new object[] { text });
         }
 
         [HarmonyPatch(typeof(HudManager), "ReInit")]
@@ -77,7 +93,7 @@ namespace PatchedAndLatched.Patches
                 if (active && time > 0f)
                 {
                     int seconds = Mathf.CeilToInt(time);
-                    textComponent!.text = $"You get detention!\n{seconds} seconds remain.";
+                    textComponent!.text = GetLocalizedDetentionText(seconds);
                     if (!textComponent.gameObject.activeSelf)
                         textComponent.gameObject.SetActive(true);
                     return;
@@ -85,9 +101,14 @@ namespace PatchedAndLatched.Patches
             }
 
             if (textComponent != null && textComponent.gameObject.activeSelf)
-            {
                 textComponent.gameObject.SetActive(false);
-            }
+        }
+
+        private static string GetLocalizedDetentionText(int seconds)
+        {
+            if (PatchedAndLatchedPlugin.IsCyrillicPlusInstalled)
+                return $"Ты получили наказание!\nОсталось {seconds} секунд.";
+            return $"You get detention!\n{seconds} seconds remain.";
         }
     }
 }

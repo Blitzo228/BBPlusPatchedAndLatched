@@ -271,16 +271,28 @@ namespace PatchedAndLatched.Patches
             }
         }
     }
-
     [HarmonyPatch(typeof(Gum), "EntityTriggerEnter")]
-    internal static class GumGotHitByGrapplingHook
+    internal static class GumHookPatch
     {
-        private static bool Prefix(Gum __instance, Entity otherEntity, Collider other, bool validCollision, bool ___flying, AudioManager ___audMan, SoundObject ___audSplat)
+        private static bool Prefix(Gum __instance, Entity otherEntity, Collider other, bool validCollision, bool ___flying, AudioManager ___audMan, SoundObject ___audSplat, Beans ___beans)
         {
             if (!PatchedAndLatchedPlugin.GrapplingHookHitGum!.Value) return true;
-            if (!validCollision || !___flying) return true;
+            if (!___flying || !validCollision) return true;
+            if (other == null && otherEntity == null) return true;
 
-            if (other.CompareTag("GrapplingHook") || otherEntity?.GetComponent<ITM_GrapplingHook>() != null || other.GetComponentInParent<ITM_GrapplingHook>() != null)
+            bool isHook = false;
+            if (other != null)
+            {
+                var hook = other.GetComponentInParent<ITM_GrapplingHook>();
+                if (hook != null) isHook = true;
+            }
+            if (!isHook && otherEntity != null)
+            {
+                var hook = otherEntity.GetComponentInParent<ITM_GrapplingHook>();
+                if (hook != null) isHook = true;
+            }
+
+            if (isHook)
             {
                 __instance.Hide();
                 __instance.beans.GumHit(__instance, false);
@@ -288,6 +300,7 @@ namespace PatchedAndLatched.Patches
                 ___audMan.PlaySingle(___audSplat);
                 return false;
             }
+
             return true;
         }
     }

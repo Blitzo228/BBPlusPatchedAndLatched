@@ -10,6 +10,7 @@ using UnityEngine;
 namespace PatchedAndLatched
 {
     [BepInDependency("alexbw145.bbplus.rewiredcompat", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("blayms.tbb.baldiplus.cyrillic", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "2.1.0")]
     public class PatchedAndLatchedPlugin : BaseUnityPlugin
     {
@@ -83,6 +84,7 @@ namespace PatchedAndLatched
         public static ConfigEntry<float>? CampingItemPickupLimit;
         public static ConfigEntry<bool>? EnableJohnnyBringCount;
         public static ConfigEntry<int>? JohnnyBringItemCount;
+        public static ConfigEntry<bool>? EnableBaldiQuarterReward;
 
         public static ConfigEntry<bool>? EnableMathMachineMultiplication;
         public static ConfigEntry<bool>? EnableMathMachineDivision;
@@ -109,6 +111,13 @@ namespace PatchedAndLatched
         public static ConfigEntry<bool>? EnableDetentionMessage;
         public static ConfigEntry<bool>? BouncyYTPDisplay;
         public static ConfigEntry<bool>? MapTileFade;
+        public static ConfigEntry<bool>? EnableQuarterSpawning;
+        public static ConfigEntry<float>? QuarterSpawnChance;
+        public static ConfigEntry<int>? QuarterMaxPerFloor;
+        public static ConfigEntry<bool>? DisableGaugeVisuals;
+        public static ConfigEntry<bool>? EnableScissorsCutRuler;
+        public static ConfigEntry<bool>? ZeroStaminaEnabled;
+        public static bool IsCyrillicPlusInstalled { get; private set; }
 
         private void Awake()
         {
@@ -170,6 +179,7 @@ namespace PatchedAndLatched
             BouncyYTPDisplay = Config.Bind("Visuals", "BouncyYTPDisplay", true, "Makes the points addition text bounce/animate when scoring points.");
             MapTileFade = Config.Bind("Visuals", "MapTileFade", true, "Fades tiles on the map in/out when they become visible/invisible.");
             StaminaOnPoints = Config.Bind("Stamina", "StaminaOnPoints", true, "Restores stamina when earning points.");
+            EnableBaldiQuarterReward = Config.Bind("Gameplay", "EnableBaldiQuarterReward", true, "Baldi leaves a Quarter after completing an activity");
 
             RandomJumpsEnabled = Config.Bind("Gameplay", "RandomJumpsEnabled", false, "Enables a random jump count in the Playtime minigame.");
             MinJumps = Config.Bind("Gameplay", "MinJumps", 3, "Minimum number of jumps required.");
@@ -206,6 +216,14 @@ namespace PatchedAndLatched
             EnableMathMachineDivision = Config.Bind("MathMachine", "EnableDivision", true, "Allows division problems on math machines.");
             EnableMathMachineExponent = Config.Bind("MathMachine", "EnableExponent", true, "Allows exponentiation problems on math machines.");
             ReplaceMathMachineCompletely = Config.Bind("MathMachine", "ReplaceCompletely", false, "Replaces all problems with multiplication, division, or exponentiation (if true, removes addition and subtraction).");
+            EnableQuarterSpawning = Config.Bind("Gameplay", "EnableQuarterSpawning", true, "Allow quarters to spawn randomly in hallways");
+            QuarterSpawnChance = Config.Bind("Gameplay", "QuarterSpawnChance", 0.1f, "Chance (0-1) for each hallway tile to spawn a quarter");
+            QuarterMaxPerFloor = Config.Bind("Gameplay", "QuarterMaxPerFloor", 5, "Maximum quarters that can spawn per floor");
+            DisableGaugeVisuals = Config.Bind("Visuals", "DisableGaugeVisuals", true, "Hide HudGauge visuals (timers, icons)");
+            EnableScissorsCutRuler = Config.Bind("Gameplay", "EnableScissorsCutRuler", true, "Scissors can cut Baldi's ruler, disabling it for 15 seconds");
+            ZeroStaminaEnabled = Config.Bind("FunSettings", "ZeroStamina", false, "Stamina is always 0 and cannot be restored");
+
+            IsCyrillicPlusInstalled = Chainloader.PluginInfos.ContainsKey("blayms.tbb.baldiplus.cyrillic");
 
             Harmony.CreateAndPatchAll(typeof(PatchedAndLatchedPlugin));
 
@@ -418,6 +436,21 @@ namespace PatchedAndLatched
 
             if (MapTileFade.Value)
                 Harmony.CreateAndPatchAll(typeof(MapTileFadeInPatch));
+
+            if (EnableBaldiQuarterReward.Value)
+                Harmony.CreateAndPatchAll(typeof(BaldiQuarterRewardPatch));
+
+            if (EnableQuarterSpawning.Value)
+                Harmony.CreateAndPatchAll(typeof(QuarterSpawnPatch));
+
+            if (DisableGaugeVisuals.Value)
+                Harmony.CreateAndPatchAll(typeof(GaugeHidePatch));
+
+            if (EnableScissorsCutRuler.Value)
+                Harmony.CreateAndPatchAll(typeof(ScissorsCutRulerPatch));
+
+            if (ZeroStaminaEnabled.Value)
+                Harmony.CreateAndPatchAll(typeof(ZeroStaminaPatch));
         }
 
         [HarmonyPatch(typeof(NameManager), "Awake")]

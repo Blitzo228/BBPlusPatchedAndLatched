@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PatchedAndLatched;
 using TMPro;
 using UnityEngine;
 
@@ -16,9 +17,7 @@ namespace PatchedAndLatched.Patches
         {
             var cache = new string[101];
             for (int i = 0; i <= 100; i++)
-            {
                 cache[i] = i + "%";
-            }
             return cache;
         }
 
@@ -44,7 +43,6 @@ namespace PatchedAndLatched.Patches
             if (_staminaText != null) return;
 
             var staminaNeedle = AccessTools.FieldRefAccess<HudManager, RectTransform>("staminaNeedle").Invoke(hud);
-
             Transform parentTransform = staminaNeedle != null ? staminaNeedle.parent : hud.Canvas().transform;
             if (parentTransform == null) return;
 
@@ -79,19 +77,17 @@ namespace PatchedAndLatched.Patches
             _restText.raycastTarget = false;
             _restText.enableWordWrapping = false;
             _restText.overflowMode = TextOverflowModes.Overflow;
-            _restText.text = "YOU NEED REST!";
+            _restText.text = GetLocalizedRestText();
 
             RectTransform restRect = _restText.rectTransform;
             restRect.anchorMin = new Vector2(0.5f, 0.5f);
-            restRect.anchorMax = new Vector2(0.5f, 0.5f);
+            restRect.anchorMax = new Vector2(0.8f, 0.5f);
             restRect.pivot = new Vector2(0.5f, 0.5f);
             restRect.localScale = Vector3.one;
 
             float yOffset = 35f;
             if (bgTransform is RectTransform bgRect)
-            {
                 yOffset = (bgRect.rect.height / 2f) + 50f;
-            }
 
             restRect.anchoredPosition = new Vector2(0f, yOffset);
             restRect.sizeDelta = new Vector2(200f, 30f);
@@ -114,15 +110,7 @@ namespace PatchedAndLatched.Patches
             if (_staminaText == null) return;
 
             int percent = Mathf.RoundToInt(Mathf.Max(0f, ratio) * 100f);
-
-            if (percent >= 0 && percent <= 100)
-            {
-                _staminaText.text = PercentStrings[percent];
-            }
-            else
-            {
-                _staminaText.text = percent + "%";
-            }
+            _staminaText.text = (percent >= 0 && percent <= 100) ? PercentStrings[percent] : (percent + "%");
 
             float colorRatio = Mathf.Clamp01(ratio);
             _staminaText.color = Color.Lerp(Color.red, Color.green, colorRatio);
@@ -132,6 +120,13 @@ namespace PatchedAndLatched.Patches
                 bool restTextEnabled = PatchedAndLatchedPlugin.EnableStaminaRestText!.Value;
                 _restText.gameObject.SetActive(restTextEnabled && ratio <= 0f);
             }
+        }
+
+        private static string GetLocalizedRestText()
+        {
+            if (PatchedAndLatchedPlugin.IsCyrillicPlusInstalled)
+                return "ТЕБЕ НУЖЕН ОТДЫХ!";
+            return "YOU NEED REST!";
         }
     }
 }
