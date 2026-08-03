@@ -11,8 +11,8 @@ namespace PatchedAndLatched
 {
     [BepInDependency("alexbw145.bbplus.rewiredcompat", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("blayms.tbb.baldiplus.cyrillic", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "2.1.0")]
     [BepInIncompatibility("blitzo.baldiplus.smallchanges")] //please stop using that
+    [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "2.1.0")]
     public class PatchedAndLatchedPlugin : BaseUnityPlugin
     {
         public static bool IsRewiredCompatInstalled { get; private set; }
@@ -32,7 +32,6 @@ namespace PatchedAndLatched
         public static ConfigEntry<bool>? NametagForFieldTrip;
         public static ConfigEntry<bool>? OnlyBaldiEveryFloor;
         public static ConfigEntry<bool>? BootsSnapRope;
-        public static ConfigEntry<bool>? StaminaSpeedModifier;
         public static ConfigEntry<bool>? BootsClassicDuration;
         public static ConfigEntry<bool>? NotebookRestoreStamina;
         public static ConfigEntry<bool>? GottaSweepAcceleration;
@@ -138,7 +137,6 @@ namespace PatchedAndLatched
             NametagForFieldTrip = Config.Bind("Gameplay", "NametagForFieldTrip", true, "You can use the Faculty Nametag to enter a field trip.");
             OnlyBaldiEveryFloor = Config.Bind("Gameplay", "OnlyBaldiEveryFloor", false, "Only Baldi spawns on every floor.");
             BootsSnapRope = Config.Bind("Gameplay", "BootsSnapRope", true, "Techno-Boots snap Playtime's jumprope.");
-            StaminaSpeedModifier = Config.Bind("Gameplay", "StaminaSpeedModifier", false, "Speed scales with stamina (low stamina = slower, high stamina = faster).");
             BootsClassicDuration = Config.Bind("Gameplay", "BootsClassicDuration", false, "Techno-Boots duration is set to 15 seconds.");
             NotebookRestoreStamina = Config.Bind("Gameplay", "NotebookRestoreStamina", true, "Restores full stamina when collecting a notebook.");
             GottaSweepAcceleration = Config.Bind("Gameplay", "GottaSweepAcceleration", true, "Gotta Sweep starts slow and accelerates over time.");
@@ -184,7 +182,7 @@ namespace PatchedAndLatched
             BouncyYTPDisplay = Config.Bind("Visuals", "BouncyYTPDisplay", true, "Makes the points addition text bounce/animate when scoring points.");
             MapTileFade = Config.Bind("Visuals", "MapTileFade", true, "Fades tiles on the map in/out when they become visible/invisible.");
             StaminaOnPoints = Config.Bind("Stamina", "StaminaOnPoints", true, "Restores stamina when earning points.");
-            EnableBaldiQuarterReward = Config.Bind("Gameplay", "EnableBaldiQuarterReward", true, "Baldi leaves a Quarter after completing an activity");
+            EnableBaldiQuarterReward = Config.Bind("Gameplay", "EnableBaldiQuarterReward", false, "Baldi praise and give a Quarter after completing an activity (like classic versions)");
 
             RandomJumpsEnabled = Config.Bind("Gameplay", "RandomJumpsEnabled", false, "Enables a random jump count in the Playtime minigame.");
             MinJumps = Config.Bind("Gameplay", "MinJumps", 3, "Minimum number of jumps required.");
@@ -221,13 +219,13 @@ namespace PatchedAndLatched
             EnableMathMachineDivision = Config.Bind("MathMachine", "EnableDivision", true, "Allows division problems on math machines.");
             EnableMathMachineExponent = Config.Bind("MathMachine", "EnableExponent", true, "Allows exponentiation problems on math machines.");
             ReplaceMathMachineCompletely = Config.Bind("MathMachine", "ReplaceCompletely", false, "Replaces all problems with multiplication, division, or exponentiation (if true, removes addition and subtraction).");
-            EnableQuarterSpawning = Config.Bind("Gameplay", "EnableQuarterSpawning", true, "Allow quarters to spawn randomly in hallways");
+            EnableQuarterSpawning = Config.Bind("Gameplay", "EnableQuarterSpawning", false, "Allow quarters to spawn randomly in hallways like classic versions");
             QuarterSpawnChance = Config.Bind("Gameplay", "QuarterSpawnChance", 0.1f, "Chance (0-1) for each hallway tile to spawn a quarter");
             QuarterMaxPerFloor = Config.Bind("Gameplay", "QuarterMaxPerFloor", 5, "Maximum quarters that can spawn per floor");
-            DisableGaugeVisuals = Config.Bind("Visuals", "DisableGaugeVisuals", true, "Hide HudGauge visuals (timers, icons)");
-            EnableScissorsCutRuler = Config.Bind("Gameplay", "EnableScissorsCutRuler", true, "Scissors can cut Baldi's ruler, disabling it for 15 seconds");
+            DisableGaugeVisuals = Config.Bind("Visuals", "DisableGaugeVisuals", false, "Hide Gauge");
+            EnableScissorsCutRuler = Config.Bind("Gameplay", "EnableScissorsCutRuler", false, "Scissors can cut Baldi's ruler for 15 seconds");
             ZeroStaminaEnabled = Config.Bind("FunSettings", "ZeroStamina", false, "Stamina is always 0 and cannot be restored");
-            EnableMatchMachineGhosting = Config.Bind("Visuals", "EnableMatchMachineGhosting", true, "Make other balloons transparent when one is selected in Match Machine activity");
+            EnableMatchMachineGhosting = Config.Bind("Visuals", "EnableMatchMachineGhosting", true, "Make Match Mathine more easility");
 
             Harmony.CreateAndPatchAll(typeof(PatchedAndLatchedPlugin));
 
@@ -248,8 +246,7 @@ namespace PatchedAndLatched
 
             if (ReplaceDietBSODA.Value)
             {
-                Harmony.CreateAndPatchAll(typeof(BSODAReplacePatch.ItemManagerPatch));
-                Harmony.CreateAndPatchAll(typeof(BSODAReplacePatch.PlayerFileManagerPatch));
+                Harmony.CreateAndPatchAll(typeof(BSODAReplacePatch));
             }
 
             if (ClassicArtsAndCrafters.Value)
@@ -290,9 +287,6 @@ namespace PatchedAndLatched
             if (BootsSnapRope.Value)
                 Harmony.CreateAndPatchAll(typeof(BootsSnapRopePatch));
 
-            if (StaminaSpeedModifier.Value)
-                Harmony.CreateAndPatchAll(typeof(StaminaSpeedModifierPatch));
-
             if (BootsClassicDuration.Value)
                 Harmony.CreateAndPatchAll(typeof(BootsClassicDurationPatch));
 
@@ -308,10 +302,19 @@ namespace PatchedAndLatched
             if (InfiniteSodaMachine.Value)
                 Harmony.CreateAndPatchAll(typeof(InfiniteSodaMachinePatch));
 
-            if (GrapplingHookBreakWindows.Value || GrapplingHookOpenDoors.Value || GrapplingHookPushNPCs.Value || GrapplingHookHitGum.Value || GrapplingHookUnlockDoors.Value || GrapplingHookBreakBalder.Value)
+            if (GrapplingHookBreakWindows.Value || GrapplingHookOpenDoors.Value || GrapplingHookUnlockDoors.Value)
             {
                 Harmony.CreateAndPatchAll(typeof(GrapplingHookPatch));
             }
+
+            if (GrapplingHookBreakBalder.Value)
+                Harmony.CreateAndPatchAll(typeof(BalderGrapplingHookPatch));
+
+            if (GrapplingHookHitGum.Value)
+                Harmony.CreateAndPatchAll(typeof(GumHookPatch));
+
+            if (GrapplingHookPushNPCs.Value)
+                Harmony.CreateAndPatchAll(typeof(GrapplingHookNPCPushPatch));
 
             if (EnableSeedLetters.Value)
             {

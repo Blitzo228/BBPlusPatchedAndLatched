@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -34,7 +33,6 @@ namespace PatchedAndLatched.Patches
 
         private static void ShowGhostedBalloons(MatchActivityBalloon current)
         {
-            if (!PatchedAndLatchedPlugin.EnableMatchMachineGhosting.Value) return;
             if (_activityField == null || _balloonArrayField == null || _spriteRendererField == null || _revealedSpriteField == null || _revealingField == null || _completedField == null) return;
 
             var activity = _activityField.GetValue(current) as MatchActivity;
@@ -47,7 +45,7 @@ namespace PatchedAndLatched.Patches
             foreach (var kv in _originalSprites)
             {
                 if (kv.Key == null || (bool)_completedField.GetValue(kv.Key))
-                    toRemove.Add(kv.Key);
+                    toRemove.Add(kv.Key!);
             }
             foreach (var b in toRemove)
                 _originalSprites.Remove(b);
@@ -79,7 +77,6 @@ namespace PatchedAndLatched.Patches
 
         private static void RestoreBalloons()
         {
-            if (!PatchedAndLatchedPlugin.EnableMatchMachineGhosting.Value) return;
             if (_spriteRendererField == null || _completedField == null) return;
 
             foreach (var kv in _originalSprites)

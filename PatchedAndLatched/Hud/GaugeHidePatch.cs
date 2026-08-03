@@ -10,7 +10,6 @@ namespace PatchedAndLatched.Patches
         [HarmonyPostfix]
         private static void ActivatePostfix(HudGauge __instance)
         {
-            if (!PatchedAndLatchedPlugin.DisableGaugeVisuals.Value) return;
             var graphics = __instance.GetComponentsInChildren<Graphic>(true);
             foreach (var graphic in graphics)
             {

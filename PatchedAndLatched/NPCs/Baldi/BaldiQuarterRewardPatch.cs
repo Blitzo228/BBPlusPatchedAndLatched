@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using UnityEngine;
+using System.Linq;
 
 namespace PatchedAndLatched.Patches
 {
@@ -10,26 +11,14 @@ namespace PatchedAndLatched.Patches
 
         static BaldiQuarterRewardPatch()
         {
-            _quarterItem = Resources.Load<ItemObject>("Items/Quarter");
-            if (_quarterItem == null)
-                _quarterItem = Resources.Load<ItemObject>("Quarter");
-            if (_quarterItem == null)
-            {
-                foreach (var item in Resources.FindObjectsOfTypeAll<ItemObject>())
-                {
-                    if (item.itemType == Items.Quarter)
-                    {
-                        _quarterItem = item;
-                        break;
-                    }
-                }
-            }
+            _quarterItem = Resources
+                .FindObjectsOfTypeAll<ItemObject>()
+                .FirstOrDefault(item => item.itemType == Items.Quarter);
         }
 
         [HarmonyPostfix]
         private static void Postfix(Baldi __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableBaldiQuarterReward.Value) return;
             if (_quarterItem == null) return;
 
             var ec = __instance.ec;

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using UnityEngine;
+using System.Linq;
 
 namespace PatchedAndLatched.Patches
 {
@@ -11,27 +12,15 @@ namespace PatchedAndLatched.Patches
 
         static QuarterSpawnPatch()
         {
-            _quarterItem = Resources.Load<ItemObject>("Items/Quarter");
-            if (_quarterItem == null)
-                _quarterItem = Resources.Load<ItemObject>("Quarter");
-            if (_quarterItem == null)
-            {
-                foreach (var item in Resources.FindObjectsOfTypeAll<ItemObject>())
-                {
-                    if (item.itemType == Items.Quarter)
-                    {
-                        _quarterItem = item;
-                        break;
-                    }
-                }
-            }
+            _quarterItem = Resources
+                .FindObjectsOfTypeAll<ItemObject>()
+                .FirstOrDefault(item => item.itemType == Items.Quarter);
         }
 
         [HarmonyPatch("BeginPlay")]
         [HarmonyPostfix]
         private static void BeginPlayPostfix(EnvironmentController __instance)
         {
-            if (!PatchedAndLatchedPlugin.EnableQuarterSpawning.Value) return;
             if (_quarterItem == null) return;
             if (_spawned) return;
 
@@ -41,8 +30,8 @@ namespace PatchedAndLatched.Patches
 
         private static void SpawnQuarters(EnvironmentController ec)
         {
-            float chance = PatchedAndLatchedPlugin.QuarterSpawnChance.Value;
-            int maxCoins = PatchedAndLatchedPlugin.QuarterMaxPerFloor.Value;
+            float chance = PatchedAndLatchedPlugin.QuarterSpawnChance!.Value;
+            int maxCoins = PatchedAndLatchedPlugin.QuarterMaxPerFloor!.Value;
             if (chance <= 0f || maxCoins <= 0) return;
 
             int spawned = 0;

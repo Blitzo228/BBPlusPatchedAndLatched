@@ -81,7 +81,9 @@ namespace PatchedAndLatched.Patches
 
             RectTransform restRect = _restText.rectTransform;
             restRect.anchorMin = new Vector2(0.5f, 0.5f);
-            restRect.anchorMax = new Vector2(0.8f, 0.5f);
+            restRect.anchorMax = new Vector2(0.5f, 0.5f);
+            if (PatchedAndLatchedPlugin.IsCyrillicPlusInstalled)
+                restRect.anchorMax = new Vector2(0.8f, 0.5f);
             restRect.pivot = new Vector2(0.5f, 0.5f);
             restRect.localScale = Vector3.one;
 

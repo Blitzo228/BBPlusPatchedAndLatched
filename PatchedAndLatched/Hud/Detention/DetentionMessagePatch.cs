@@ -1,5 +1,4 @@
 using HarmonyLib;
-using PatchedAndLatched;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
@@ -107,7 +106,7 @@ namespace PatchedAndLatched.Patches
         private static string GetLocalizedDetentionText(int seconds)
         {
             if (PatchedAndLatchedPlugin.IsCyrillicPlusInstalled)
-                return $"Ты получили наказание!\nОсталось {seconds} секунд.";
+                return $"Ты получил наказание!\nОсталось {seconds} секунд.";
             return $"You get detention!\n{seconds} seconds remain.";
         }
     }
