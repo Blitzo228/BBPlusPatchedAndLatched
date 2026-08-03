@@ -12,10 +12,13 @@ namespace PatchedAndLatched
     [BepInDependency("alexbw145.bbplus.rewiredcompat", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("blayms.tbb.baldiplus.cyrillic", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "2.1.0")]
+    [BepInIncompatibility("blitzo.baldiplus.smallchanges")] //please stop using that
     public class PatchedAndLatchedPlugin : BaseUnityPlugin
     {
         public static bool IsRewiredCompatInstalled { get; private set; }
         private static bool inputsRegistered = false;
+
+        public static bool IsCyrillicPlusInstalled { get; private set; }
 
         public static ConfigEntry<bool>? CutGrapplingHook;
         public static ConfigEntry<bool>? ColoredActivities;
@@ -117,11 +120,13 @@ namespace PatchedAndLatched
         public static ConfigEntry<bool>? DisableGaugeVisuals;
         public static ConfigEntry<bool>? EnableScissorsCutRuler;
         public static ConfigEntry<bool>? ZeroStaminaEnabled;
-        public static bool IsCyrillicPlusInstalled { get; private set; }
+        public static ConfigEntry<bool>? EnableMatchMachineGhosting;
+
 
         private void Awake()
         {
             IsRewiredCompatInstalled = Chainloader.PluginInfos.ContainsKey("alexbw145.bbplus.rewiredcompat");
+            IsCyrillicPlusInstalled = Chainloader.PluginInfos.ContainsKey("blayms.tbb.baldiplus.cyrillic");
 
             CutGrapplingHook = Config.Bind("Gameplay", "CutGrapplingHook", true, "You can cut the Grappling Hook with Scissors.");
             RunningInRooms = Config.Bind("Gameplay", "RunningInRooms", false, "The Principal does not give detention for running in rooms.");
@@ -222,8 +227,7 @@ namespace PatchedAndLatched
             DisableGaugeVisuals = Config.Bind("Visuals", "DisableGaugeVisuals", true, "Hide HudGauge visuals (timers, icons)");
             EnableScissorsCutRuler = Config.Bind("Gameplay", "EnableScissorsCutRuler", true, "Scissors can cut Baldi's ruler, disabling it for 15 seconds");
             ZeroStaminaEnabled = Config.Bind("FunSettings", "ZeroStamina", false, "Stamina is always 0 and cannot be restored");
-
-            IsCyrillicPlusInstalled = Chainloader.PluginInfos.ContainsKey("blayms.tbb.baldiplus.cyrillic");
+            EnableMatchMachineGhosting = Config.Bind("Visuals", "EnableMatchMachineGhosting", true, "Make other balloons transparent when one is selected in Match Machine activity");
 
             Harmony.CreateAndPatchAll(typeof(PatchedAndLatchedPlugin));
 
@@ -451,6 +455,9 @@ namespace PatchedAndLatched
 
             if (ZeroStaminaEnabled.Value)
                 Harmony.CreateAndPatchAll(typeof(ZeroStaminaPatch));
+
+            if (EnableMatchMachineGhosting.Value)
+                Harmony.CreateAndPatchAll(typeof(MatchMachineGhostingPatch));
         }
 
         [HarmonyPatch(typeof(NameManager), "Awake")]
