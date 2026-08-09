@@ -231,7 +231,7 @@ namespace PatchedAndLatched
             EnableScissorsCutRuler = Config.Bind("Gameplay", "EnableScissorsCutRuler", false, "Scissors can cut Baldi's ruler for 15 seconds.");
             ZeroStaminaEnabled = Config.Bind("FunSettings", "ZeroStamina", false, "Stamina is always 0 and cannot be restored.");
             EnableMatchMachineGhosting = Config.Bind("Visuals", "EnableMatchMachineGhosting", false, "Make Match Mathines easier.");
-            DisableStudentSpawns = Config.Bind("Gameplay", "DisableStudentSpawns", false, "Remove students from spawning and gives 50 ytps per student as compensation.");
+            DisableStudentSpawns = Config.Bind("Gameplay", "DisableStudentSpawns", false, "Remove students from spawning and gives 25 ytps per student as compensation.");
             EnableTapePlayerReturnSprite = Config.Bind("Visuals", "EnableTapePlayerReturnSprite", true, "Return TapePlayer sprite to TapePlayerOpen after audio finishes.");
             EnableQuitCursorHide = Config.Bind("Visuals", "EnableQuitCursorHide", true, "Hide cursor when pressing Quit in main menu.");
             StartSpoopModeOnNotebooks = Config.Bind("Gameplay", "StartSpoopModeOnNotebooks", false, "Start spoop mode when the player collects two notebooks.");
