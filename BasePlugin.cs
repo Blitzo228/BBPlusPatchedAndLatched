@@ -12,7 +12,7 @@ namespace PatchedAndLatched
     [BepInDependency("alexbw145.bbplus.rewiredcompat", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("blayms.tbb.baldiplus.cyrillic", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInIncompatibility("blitzo.baldiplus.smallchanges")] //please stop using that
-    [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "2.1.0")]
+    [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "2.2.0")]
     public class PatchedAndLatchedPlugin : BaseUnityPlugin
     {
         public static bool IsRewiredCompatInstalled { get; private set; }
