@@ -120,6 +120,11 @@ namespace PatchedAndLatched
         public static ConfigEntry<bool>? EnableScissorsCutRuler;
         public static ConfigEntry<bool>? ZeroStaminaEnabled;
         public static ConfigEntry<bool>? EnableMatchMachineGhosting;
+        public static ConfigEntry<bool>? DisableStudentSpawns;
+        public static ConfigEntry<bool>? EnableTapePlayerReturnSprite;
+        public static ConfigEntry<bool>? EnableQuitCursorHide;
+        public static ConfigEntry<bool>? StartSpoopModeOnNotebooks;
+        public static ConfigEntry<bool>? DoubleStorePrices;
 
 
         private void Awake()
@@ -219,13 +224,19 @@ namespace PatchedAndLatched
             EnableMathMachineDivision = Config.Bind("MathMachine", "EnableDivision", true, "Allows division problems on math machines.");
             EnableMathMachineExponent = Config.Bind("MathMachine", "EnableExponent", true, "Allows exponentiation problems on math machines.");
             ReplaceMathMachineCompletely = Config.Bind("MathMachine", "ReplaceCompletely", false, "Replaces all problems with multiplication, division, or exponentiation (if true, removes addition and subtraction).");
-            EnableQuarterSpawning = Config.Bind("Gameplay", "EnableQuarterSpawning", false, "Allow quarters to spawn randomly in hallways like classic versions");
-            QuarterSpawnChance = Config.Bind("Gameplay", "QuarterSpawnChance", 0.1f, "Chance (0-1) for each hallway tile to spawn a quarter");
-            QuarterMaxPerFloor = Config.Bind("Gameplay", "QuarterMaxPerFloor", 5, "Maximum quarters that can spawn per floor");
-            DisableGaugeVisuals = Config.Bind("Visuals", "DisableGaugeVisuals", false, "Hide Gauge");
-            EnableScissorsCutRuler = Config.Bind("Gameplay", "EnableScissorsCutRuler", false, "Scissors can cut Baldi's ruler for 15 seconds");
-            ZeroStaminaEnabled = Config.Bind("FunSettings", "ZeroStamina", false, "Stamina is always 0 and cannot be restored");
-            EnableMatchMachineGhosting = Config.Bind("Visuals", "EnableMatchMachineGhosting", true, "Make Match Mathine more easility");
+            EnableQuarterSpawning = Config.Bind("Gameplay", "EnableQuarterSpawning", false, "Allow quarters to spawn randomly in hallways like classic versions.");
+            QuarterSpawnChance = Config.Bind("Gameplay", "QuarterSpawnChance", 0.1f, "Chance (0-1) for each hallway tile to spawn a quarter.");
+            QuarterMaxPerFloor = Config.Bind("Gameplay", "QuarterMaxPerFloor", 5, "Maximum quarters that can spawn per floor.");
+            DisableGaugeVisuals = Config.Bind("Visuals", "DisableGaugeVisuals", false, "Hides the gauges.");
+            EnableScissorsCutRuler = Config.Bind("Gameplay", "EnableScissorsCutRuler", false, "Scissors can cut Baldi's ruler for 15 seconds.");
+            ZeroStaminaEnabled = Config.Bind("FunSettings", "ZeroStamina", false, "Stamina is always 0 and cannot be restored.");
+            EnableMatchMachineGhosting = Config.Bind("Visuals", "EnableMatchMachineGhosting", false, "Make Match Mathines easier.");
+            DisableStudentSpawns = Config.Bind("Gameplay", "DisableStudentSpawns", false, "Remove students from spawning and gives 50 ytps per student as compensation.");
+            EnableTapePlayerReturnSprite = Config.Bind("Visuals", "EnableTapePlayerReturnSprite", true, "Return TapePlayer sprite to TapePlayerOpen after audio finishes.");
+            EnableQuitCursorHide = Config.Bind("Visuals", "EnableQuitCursorHide", true, "Hide cursor when pressing Quit in main menu.");
+            StartSpoopModeOnNotebooks = Config.Bind("Gameplay", "StartSpoopModeOnNotebooks", false, "Start spoop mode when the player collects two notebooks.");
+            DoubleStorePrices = Config.Bind("FunSettings", "DoubleStorePrices", false, "Double the prices of all items in the store.");
+
 
             Harmony.CreateAndPatchAll(typeof(PatchedAndLatchedPlugin));
 
@@ -245,9 +256,7 @@ namespace PatchedAndLatched
                 Harmony.CreateAndPatchAll(typeof(PointsBonusPatch));
 
             if (ReplaceDietBSODA.Value)
-            {
                 Harmony.CreateAndPatchAll(typeof(BSODAReplacePatch));
-            }
 
             if (ClassicArtsAndCrafters.Value)
             {
@@ -417,6 +426,7 @@ namespace PatchedAndLatched
 
             if (EnableCustomLightRadius.Value)
                 Harmony.CreateAndPatchAll(typeof(LightGenerationPatch));
+
             if (DisableBananasInCafeteria.Value)
                 Harmony.CreateAndPatchAll(typeof(BananaCafeteriaPatch));
 
@@ -461,6 +471,21 @@ namespace PatchedAndLatched
 
             if (EnableMatchMachineGhosting.Value)
                 Harmony.CreateAndPatchAll(typeof(MatchMachineGhostingPatch));
+
+            if (DisableStudentSpawns.Value)
+                Harmony.CreateAndPatchAll(typeof(StudentSpawnerPatch));
+
+            if (EnableTapePlayerReturnSprite.Value)
+                Harmony.CreateAndPatchAll(typeof(TapePlayerPatch));
+
+            if (EnableQuitCursorHide.Value)
+                Harmony.CreateAndPatchAll(typeof(MainMenuQuitPatch));
+
+            if (StartSpoopModeOnNotebooks.Value)
+                Harmony.CreateAndPatchAll(typeof(NotebookSpoopModePatch));
+
+            if (DoubleStorePrices.Value)
+                Harmony.CreateAndPatchAll(typeof(DoubleStorePricesPatch));
         }
 
         [HarmonyPatch(typeof(NameManager), "Awake")]

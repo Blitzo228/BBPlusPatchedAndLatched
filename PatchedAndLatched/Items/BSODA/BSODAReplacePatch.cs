@@ -1,68 +1,86 @@
 ﻿using HarmonyLib;
+using UnityEngine;
 
 namespace PatchedAndLatched.Patches
 {
-    public static class BSODAReplacePatch
+    [HarmonyPatch]
+    internal static class BSODAReplacePatch
     {
-        [HarmonyPatch(typeof(ItemManager))]
-        public static class ItemManagerPatch
-        {
-            [HarmonyPrefix]
-            [HarmonyPatch("AddItem", new[] { typeof(ItemObject) })]
-            public static void AddItem_Prefix(ref ItemObject item)
-            {
-                if (item == null) return;
+        private static ItemObject? _regularBsoda;
 
-                if (item.name.ToLower().Contains("diet") && item.name.ToLower().Contains("bsoda"))
+        private static void FindRegularBsoda()
+        {
+            if (_regularBsoda != null) return;
+
+            var allItems = Resources.FindObjectsOfTypeAll<ItemObject>();
+            foreach (var item in allItems)
+            {
+                if (item.itemType == Items.Bsoda)
                 {
-                    foreach (var obj in Singleton<PlayerFileManager>.Instance.itemObjects)
-                    {
-                        if (obj != null && obj.name.ToLower().Contains("bsoda") && !obj.name.ToLower().Contains("diet"))
-                        {
-                            item = obj;
-                            break;
-                        }
-                    }
+                    _regularBsoda = item;
+                    break;
                 }
             }
 
-            [HarmonyPrefix]
-            [HarmonyPatch("AddItem", new[] { typeof(ItemObject), typeof(Pickup) })]
-            public static void AddItemWithPickup_Prefix(ref ItemObject item)
+            if (_regularBsoda == null && Singleton<PlayerFileManager>.Instance != null)
             {
-                if (item == null) return;
-
-                if (item.name.ToLower().Contains("diet") && item.name.ToLower().Contains("bsoda"))
+                foreach (var item in Singleton<PlayerFileManager>.Instance.itemObjects)
                 {
-                    foreach (var obj in Singleton<PlayerFileManager>.Instance.itemObjects)
+                    if (item.itemType == Items.Bsoda)
                     {
-                        if (obj != null && obj.name.ToLower().Contains("bsoda") && !obj.name.ToLower().Contains("diet"))
-                        {
-                            item = obj;
-                            break;
-                        }
+                        _regularBsoda = item;
+                        break;
                     }
                 }
             }
         }
 
-        [HarmonyPatch(typeof(PlayerFileManager))]
-        public static class PlayerFileManagerPatch
+        [HarmonyPatch(typeof(ItemManager), "AddItem", typeof(ItemObject))]
+        [HarmonyPrefix]
+        private static void PrefixAddItem(ref ItemObject item)
         {
-            [HarmonyPostfix]
-            [HarmonyPatch("Load")]
-            public static void Load_Postfix(PlayerFileManager __instance)
-            {
-                for (int i = __instance.itemObjects.Count - 1; i >= 0; i--)
-                {
-                    if (__instance.itemObjects[i] != null &&
-                        __instance.itemObjects[i].name.ToLower().Contains("diet") &&
-                        __instance.itemObjects[i].name.ToLower().Contains("bsoda"))
-                    {
-                        __instance.itemObjects.RemoveAt(i);
-                    }
-                }
-            }
+            if (item == null) return;
+            if (item.itemType != Items.DietBsoda) return;
+
+            FindRegularBsoda();
+            if (_regularBsoda != null)
+                item = _regularBsoda;
+        }
+
+        [HarmonyPatch(typeof(ItemManager), "AddItem", typeof(ItemObject), typeof(Pickup))]
+        [HarmonyPrefix]
+        private static void PrefixAddItemWithPickup(ref ItemObject item, Pickup pickup)
+        {
+            if (item == null) return;
+            if (item.itemType != Items.DietBsoda) return;
+
+            FindRegularBsoda();
+            if (_regularBsoda != null)
+                item = _regularBsoda;
+        }
+
+        [HarmonyPatch(typeof(LevelBuilder), "CreateItem", typeof(RoomController), typeof(ItemObject), typeof(Vector2), typeof(bool), typeof(bool))]
+        [HarmonyPrefix]
+        private static void PrefixCreateItem(ref ItemObject item)
+        {
+            if (item == null) return;
+            if (item.itemType != Items.DietBsoda) return;
+
+            FindRegularBsoda();
+            if (_regularBsoda != null)
+                item = _regularBsoda;
+        }
+
+        [HarmonyPatch(typeof(ItemManager), "SetItem")]
+        [HarmonyPrefix]
+        private static void PrefixSetItem(ref ItemObject item, int slot)
+        {
+            if (item == null) return;
+            if (item.itemType != Items.DietBsoda) return;
+
+            FindRegularBsoda();
+            if (_regularBsoda != null)
+                item = _regularBsoda;
         }
     }
 }
