@@ -12,7 +12,8 @@ namespace PatchedAndLatched
     [BepInDependency("alexbw145.bbplus.rewiredcompat", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("blayms.tbb.baldiplus.cyrillic", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInIncompatibility("blitzo.baldiplus.smallchanges")] //please stop using that
-    [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "2.2.0")]
+    [BepInIncompatibility("levs_kittne.plus.nowheretohide")] //Mom, we can get Nowhere To Hide? Nowhere To Hide in home:
+    [BepInPlugin("blitzo.baldiplus.patchedandlatched", "Patched and Latched", "2.5.0")]
     public class PatchedAndLatchedPlugin : BaseUnityPlugin
     {
         public static bool IsRewiredCompatInstalled { get; private set; }
@@ -136,6 +137,8 @@ namespace PatchedAndLatched
         public static ConfigEntry<bool>? EnablePrincipalSpawnChance;
         public static ConfigEntry<float>? PrincipalSpawnChance;
         public static ConfigEntry<bool>? EnableBootsIgnoreGum;
+        public static ConfigEntry<bool>? EnableOldCafeteriaCeiling;
+        public static ConfigEntry<bool>? EnableStaminaHideOnComplete;
 
 
         private void Awake()
@@ -248,16 +251,18 @@ namespace PatchedAndLatched
             KeepPointsDisplayAlwaysVisible = Config.Bind("Hud", "KeepPointsDisplayAlwaysVisible", true, "Points display (score counter) always stays visible and doesn't slide down.");
             EnableDrinkingPenalty = Config.Bind("Detention", "EnableDrinkingPenalty", true, "Drinking from water fountain gives detention");
             EnableAllTestMaps = Config.Bind("MainMenu", "EnableAllTestMaps", true, "Show test map buttons in main menu");
-            EnableScissorsBullying = Config.Bind("Detention", "EnableScissorsBullying", true, "Using scissors (except on gum) counts as bullying");
+            EnableScissorsBullying = Config.Bind("Detention", "EnableScissorsBullying", true, "Using scissors counts as bullying");
             EnableElevatorStaminaRestore = Config.Bind("Staminometer", "EnableElevatorStaminaRestore", true, "Restore full stamina when collect elevator");
             EnableDrReflexLeavePenalty = Config.Bind("Detention", "EnableDrReflexLeavePenalty", true, "Principal gives detention for leaving Dr. Reflex's test.");
-            EnableBaldiSafeRoomTeleport = Config.Bind("NPCs", "EnableBaldiSafeRoomTeleport", true, "Baldi teleports player to Safe Room instead of killing");
+            EnableBaldiSafeRoomTeleport = Config.Bind("NPCs", "EnableBaldiSafeRoomTeleport", false, "Baldi teleports player to Safe Room instead of killing");
             BaldiSafeRoomTeleportCount = Config.Bind("NPCs", "BaldiSafeRoomTeleportCount", 1, "Number of times Baldi will teleport player to Safe Room before killing");
             EnableItemNameSuffix = Config.Bind("Hud", "EnableItemNameSuffix", true, "Add ':3' in items name (like Andrew Methhouse Reworked)");
-            EnableUnlimitedMapZoom = Config.Bind("Hud", "EnableUnlimitedMapZoom", true, "Remove map zoom limits and set zoom speed");
-            EnablePrincipalSpawnChance = Config.Bind("NPCs", "EnablePrincipalSpawnChance", true, "Enable chance for Principal to not spawn");
-            PrincipalSpawnChance = Config.Bind("NPCs", "PrincipalSpawnChance", 0.5f, "Chance (0-1) that Principal will not spawn (0 = always spawn, 1 = never spawn)");
-            EnableBootsIgnoreGum = Config.Bind("Items", "EnableBootsIgnoreGum", true, "Boots prevent slowdown from gum");
+            EnableUnlimitedMapZoom = Config.Bind("Hud", "EnableUnlimitedMapZoom", false, "Remove map zoom limits and set zoom speed");
+            EnablePrincipalSpawnChance = Config.Bind("NPCs", "EnablePrincipalSpawnChance", false, "Enable chance for Principal to not spawn and get vacation");
+            PrincipalSpawnChance = Config.Bind("NPCs", "PrincipalSpawnChance", 0.5f, "Chance  Principal will not spawn");
+            EnableBootsIgnoreGum = Config.Bind("Items", "EnableBootsIgnoreGum", true, "Boots blocks slowdown from gum");
+            EnableOldCafeteriaCeiling = Config.Bind("Rooms", "EnableOldCafeteriaCeiling", false, "Restore old cafeteria ceiling prior 0.14");
+            EnableStaminaHideOnComplete = Config.Bind("Hud", "EnableStaminaHideOnComplete", true, "Hide stamina meter after all notebooks are collected");
 
 
             Harmony.CreateAndPatchAll(typeof(PatchedAndLatchedPlugin));
@@ -536,6 +541,17 @@ namespace PatchedAndLatched
                 Harmony.CreateAndPatchAll(typeof(GumBootsPatch));
                 Harmony.CreateAndPatchAll(typeof(EntitySetResistAddendPatch));
             }
+
+            if (EnableOldCafeteriaCeiling.Value)
+            {
+                Harmony.CreateAndPatchAll(typeof(RoomFunctionContainerPatch));
+                Harmony.CreateAndPatchAll(typeof(LevelBuilderLoadRoomOverridePatch));
+                Harmony.CreateAndPatchAll(typeof(LevelBuilderLoadRoomPatch));
+                Harmony.CreateAndPatchAll(typeof(LevelBuilderStartGeneratePatch));
+            }
+
+            if (EnableStaminaHideOnComplete.Value)
+                Harmony.CreateAndPatchAll(typeof(StaminaHideOnCompletePatch));
         }
 
         [HarmonyPatch(typeof(NameManager), "Awake")]
@@ -564,3 +580,4 @@ namespace PatchedAndLatched
         }
     }
 }
+
