@@ -31,14 +31,12 @@ namespace PatchedAndLatched
         public static ConfigEntry<bool>? OldConveyorBelt;
         public static ConfigEntry<bool>? NametagForFieldTrip;
         public static ConfigEntry<bool>? OnlyBaldiEveryFloor;
-        public static ConfigEntry<bool>? BootsSnapRope;
         public static ConfigEntry<bool>? BootsClassicDuration;
         public static ConfigEntry<bool>? NotebookRestoreStamina;
         public static ConfigEntry<bool>? GottaSweepAcceleration;
         public static ConfigEntry<bool>? CustomInventorySlots;
         public static ConfigEntry<int>? InventorySlotCount;
         public static ConfigEntry<bool>? InfiniteSodaMachine;
-        public static ConfigEntry<bool>? EnableSeedLetters;
         public static ConfigEntry<bool>? FirstPrizeBreakByBSODA;
         public static ConfigEntry<bool>? InfiniteReach;
         public static ConfigEntry<float>? ReachDistance;
@@ -125,6 +123,19 @@ namespace PatchedAndLatched
         public static ConfigEntry<bool>? EnableQuitCursorHide;
         public static ConfigEntry<bool>? StartSpoopModeOnNotebooks;
         public static ConfigEntry<bool>? DoubleStorePrices;
+        public static ConfigEntry<bool>? KeepPointsDisplayAlwaysVisible;
+        public static ConfigEntry<bool>? EnableDrinkingPenalty;
+        public static ConfigEntry<bool>? EnableAllTestMaps;
+        public static ConfigEntry<bool>? EnableScissorsBullying;
+        public static ConfigEntry<bool>? EnableElevatorStaminaRestore;
+        public static ConfigEntry<bool>? EnableDrReflexLeavePenalty;
+        public static ConfigEntry<bool>? EnableBaldiSafeRoomTeleport;
+        public static ConfigEntry<int>? BaldiSafeRoomTeleportCount;
+        public static ConfigEntry<bool>? EnableItemNameSuffix;
+        public static ConfigEntry<bool>? EnableUnlimitedMapZoom;
+        public static ConfigEntry<bool>? EnablePrincipalSpawnChance;
+        public static ConfigEntry<float>? PrincipalSpawnChance;
+        public static ConfigEntry<bool>? EnableBootsIgnoreGum;
 
 
         private void Awake()
@@ -132,35 +143,33 @@ namespace PatchedAndLatched
             IsRewiredCompatInstalled = Chainloader.PluginInfos.ContainsKey("alexbw145.bbplus.rewiredcompat");
             IsCyrillicPlusInstalled = Chainloader.PluginInfos.ContainsKey("blayms.tbb.baldiplus.cyrillic");
 
-            CutGrapplingHook = Config.Bind("Gameplay", "CutGrapplingHook", true, "You can cut the Grappling Hook with Scissors.");
-            RunningInRooms = Config.Bind("Gameplay", "RunningInRooms", false, "The Principal does not give detention for running in rooms.");
-            PointsBonus = Config.Bind("Gameplay", "PointsBonus", false, "Every 30 points awards +5 bonus points.");
-            ReplaceDietBSODA = Config.Bind("Gameplay", "ReplaceDietBSODA", false, "Regular BSODA completely replaces Diet BSODA.");
-            ClassicArtsAndCrafters = Config.Bind("Gameplay", "ClassicArtsAndCrafters", false, "Classic Arts and Crafters: no spinning, instant teleport on touch.");
-            NoPrincipalFacultyKnock = Config.Bind("Gameplay", "NoPrincipalFacultyKnock", false, "The Principal does not knock on faculty doors; he just opens them.");
-            OldConveyorBelt = Config.Bind("Gameplay", "OldConveyorBelt", false, "Uses the old conveyor belt speed.");
-            NametagForFieldTrip = Config.Bind("Gameplay", "NametagForFieldTrip", true, "You can use the Faculty Nametag to enter a field trip.");
-            OnlyBaldiEveryFloor = Config.Bind("Gameplay", "OnlyBaldiEveryFloor", false, "Only Baldi spawns on every floor.");
-            BootsSnapRope = Config.Bind("Gameplay", "BootsSnapRope", true, "Techno-Boots snap Playtime's jumprope.");
-            BootsClassicDuration = Config.Bind("Gameplay", "BootsClassicDuration", false, "Techno-Boots duration is set to 15 seconds.");
-            NotebookRestoreStamina = Config.Bind("Gameplay", "NotebookRestoreStamina", true, "Restores full stamina when collecting a notebook.");
-            GottaSweepAcceleration = Config.Bind("Gameplay", "GottaSweepAcceleration", true, "Gotta Sweep starts slow and accelerates over time.");
-            CustomInventorySlots = Config.Bind("Gameplay", "CustomInventorySlots", false, "Enables a custom inventory slot count.");
-            InventorySlotCount = Config.Bind("Gameplay", "InventorySlotCount", 5, "Number of inventory slots (1-9).");
-            InfiniteSodaMachine = Config.Bind("Gameplay", "InfiniteSodaMachine", false, "Vending machines never run out of goodness.");
-            EnableSeedLetters = Config.Bind("Gameplay", "SeedTweaks", true, "Allows seeds to accept any characters with seeds of any length, as well as display \"Pre-Made\" on pre-made levels.");
-            FirstPrizeBreakByBSODA = Config.Bind("Gameplay", "FirstPrizeBreakByBSODA", true, "BSODA can stun First Prize on hit.");
-            InfiniteReach = Config.Bind("Gameplay", "InfiniteReach", false, "Allows picking up items from any distance.");
-            ReachDistance = Config.Bind("Gameplay", "ReachDistance", 10000f, "Maximum reach distance for picking up items (10000 = infinite).");
-            EnableDropItem = Config.Bind("Gameplay", "EnableDropItem", true, "Drop items using the R key.");
-            ToggleableDoors = Config.Bind("Gameplay", "ToggleableDoors", false, "Allows doors to be toggled open and closed by clicking them (similar to DFACR).");
+            CutGrapplingHook = Config.Bind("Items", "CutGrapplingHook", true, "You can cut the Grappling Hook with Scissors.");
+            RunningInRooms = Config.Bind("NPCs", "RunningInRooms", false, "The Principal does not give detention for running in rooms.");
+            PointsBonus = Config.Bind("YTPs", "PointsBonus", false, "Every 30 points awards +5 bonus points.");
+            ReplaceDietBSODA = Config.Bind("Items", "ReplaceDietBSODA", false, "Regular BSODA completely replaces Diet BSODA.");
+            ClassicArtsAndCrafters = Config.Bind("NPCs", "ClassicArtsAndCrafters", false, "Classic Arts and Crafters: no spinning, instant teleport on touch.");
+            NoPrincipalFacultyKnock = Config.Bind("NPCs", "NoPrincipalFacultyKnock", false, "The Principal does not knock on faculty doors; he just opens them.");
+            OldConveyorBelt = Config.Bind("Structures", "OldConveyorBelt", false, "Uses the old conveyor belt speed.");
+            NametagForFieldTrip = Config.Bind("Items", "NametagForFieldTrip", true, "You can use the Faculty Nametag to enter a field trip.");
+            OnlyBaldiEveryFloor = Config.Bind("NPCs", "OnlyBaldiEveryFloor", false, "Only Baldi spawns on every floor.");
+            BootsClassicDuration = Config.Bind("Items", "BootsClassicDuration", false, "Techno-Boots duration is set to 15 seconds.");
+            NotebookRestoreStamina = Config.Bind("Staminometer", "NotebookRestoreStamina", true, "Restores full stamina when collecting a notebook.");
+            GottaSweepAcceleration = Config.Bind("NPCs", "GottaSweepAcceleration", true, "Gotta Sweep starts slow and accelerates over time.");
+            CustomInventorySlots = Config.Bind("Hud", "CustomInventorySlots", false, "Enables a custom inventory slot count.");
+            InventorySlotCount = Config.Bind("Hud", "InventorySlotCount", 5, "Number of inventory slots (1-9).");
+            InfiniteSodaMachine = Config.Bind("Items", "InfiniteSodaMachine", false, "Vending machines never run out of goodness.");
+            FirstPrizeBreakByBSODA = Config.Bind("Items", "FirstPrizeBreakByBSODA", true, "BSODA can stun First Prize on hit.");
+            InfiniteReach = Config.Bind("Player", "InfiniteReach", false, "Allows picking up items from any distance.");
+            ReachDistance = Config.Bind("Player", "ReachDistance", 10000f, "Maximum reach distance for picking up items (10000 = infinite).");
+            EnableDropItem = Config.Bind("Items", "EnableDropItem", true, "Drop items using the R key.");
+            ToggleableDoors = Config.Bind("Structures", "ToggleableDoors", false, "Allows doors to be toggled open and closed by clicking them (similar to DFACR).");
 
-            GrapplingHookBreakWindows = Config.Bind("Gameplay", "GrapplingHookBreakWindows", true, "The grappling hook can break windows.");
-            GrapplingHookOpenDoors = Config.Bind("Gameplay", "GrapplingHookOpenDoors", true, "The grappling hook can open doors with clickables.");
-            GrapplingHookPushNPCs = Config.Bind("Gameplay", "GrapplingHookPushNPCs", true, "The grappling hook pushes NPCs on hit.");
-            GrapplingHookHitGum = Config.Bind("Gameplay", "GrapplingHookHitGum", true, "The grappling hook can hit flying gum.");
-            GrapplingHookBreakBalder = Config.Bind("Gameplay", "GrapplingHookBreakBalder", true, "The grappling hook can break Baldi on hit.");
-            GrapplingHookUnlockDoors = Config.Bind("Gameplay", "GrapplingHookUnlockDoors", true, "The grappling hook can break locks and open locked doors.");
+            GrapplingHookBreakWindows = Config.Bind("Items", "GrapplingHookBreakWindows", true, "The grappling hook can break windows.");
+            GrapplingHookOpenDoors = Config.Bind("Items", "GrapplingHookOpenDoors", true, "The grappling hook can open doors with clickables.");
+            GrapplingHookPushNPCs = Config.Bind("Items", "GrapplingHookPushNPCs", true, "The grappling hook pushes NPCs on hit.");
+            GrapplingHookHitGum = Config.Bind("Items", "GrapplingHookHitGum", true, "The grappling hook can hit flying gum.");
+            GrapplingHookBreakBalder = Config.Bind("Items", "GrapplingHookBreakBalder", true, "The grappling hook can break Baldi on hit.");
+            GrapplingHookUnlockDoors = Config.Bind("Items", "GrapplingHookUnlockDoors", true, "The grappling hook can break locks and open locked doors.");
 
             FastModeEnabled = Config.Bind("FunSettings", "FastMode", false, "Makes everything move faster.");
             LethalTouchEnabled = Config.Bind("FunSettings", "LethalTouch", false, "Any NPC touching the player kills them instantly.");
@@ -168,74 +177,87 @@ namespace PatchedAndLatched
             AllKnowingPrincipalEnabled = Config.Bind("FunSettings", "AllKnowingPrincipal", false, "The Principal instantly knows where you are and chases you.");
 
             SchoolHouseEscape = Config.Bind("Visuals", "SchoolHouseEscape", true, "Plays the SchoolHouse Escape music when all notebooks are collected.");
-            NoTransparentMap = Config.Bind("Visuals", "NoTransparentMap", true, "Removes transparency from the map.");
-            ColoredActivities = Config.Bind("Visuals", "ColoredActivities", true, "Colored balloons in activities (Balloon Buster only).");
-            EnableHUDShadows = Config.Bind("Visuals", "EnableHUDShadows", true, "Adds shadows to HUD text.");
-            EnableStaminaNoLimit = Config.Bind("Visuals", "EnableStaminaNoLimit", false, "Makes your stamina infinite.");
-            EnableStaminaText = Config.Bind("Visuals", "EnableStaminaText", true, "Shows stamina percentage text next to the staminometer.");
-            EnableStaminaRestText = Config.Bind("Visuals", "EnableStaminaRestText", true, "Shows 'YOU NEED REST!' text when stamina is empty.");
+            NoTransparentMap = Config.Bind("Hud", "NoTransparentMap", true, "Removes transparency from the map.");
+            ColoredActivities = Config.Bind("Activities", "ColoredActivities", true, "Colored balloons in activities (Balloon Buster only).");
+            EnableHUDShadows = Config.Bind("Hud", "EnableHUDShadows", true, "Adds shadows to HUD text.");
+            EnableStaminaNoLimit = Config.Bind("Staminometer", "EnableStaminaNoLimit", false, "Makes your stamina infinite.");
+            EnableStaminaText = Config.Bind("Staminometer", "EnableStaminaText", true, "Shows stamina percentage text next to the staminometer.");
+            EnableStaminaRestText = Config.Bind("Staminometer", "EnableStaminaRestText", true, "Shows 'YOU NEED REST!' text when stamina is empty.");
             EnablePickupDissolve = Config.Bind("Visuals", "EnablePickupDissolve", true, "Smooth dissolve effect when picking up items.");
             PickupDissolveDuration = Config.Bind("Visuals", "PickupDissolveDuration", 0.5f, "Duration of the dissolve effect in seconds.");
             EnableNotebookSpin = Config.Bind("Visuals", "EnableNotebookSpin", true, "Enables the notebook spinning animation.");
-            EnableMysteryRoomMap = Config.Bind("Visuals", "EnableMysteryRoomMap", true, "Shows the Mystery Room on the map with color changes (gray for inactive, dark green for active).");
+            EnableMysteryRoomMap = Config.Bind("Hud", "EnableMysteryRoomMap", true, "Shows the Mystery Room on the map with color changes (gray for inactive, dark green for active).");
             EnableCustomLightRadius = Config.Bind("Visuals", "EnableCustomLightRadius", true, "Enables lighting changes.");
             AmbientDarknessLevel = Config.Bind("Visuals", "AmbientDarknessLevel", 0.1f, "Base light level for unlit tiles (0 = pitch black, 1 = fully lit).");
             CustomLightRadiusMultiplier = Config.Bind("Visuals", "CustomLightRadiusMultiplier", 0.5f, "Multiplier for light source radius. Lower values create more dark spots.");
-            TechnoBootsAnimation = Config.Bind("Visuals", "TechnoBootsAnimation", true, "Enables the Techno Boots HUD sprite animation.");
-            EnableNametagHudAnimation = Config.Bind("Visuals", "EnableNametagHudAnimation", true, "Displays and animates the nametag sprites at the bottom center of the screen when active.");
-            EnableDetentionMessage = Config.Bind("Visuals", "EnableDetentionMessage", true, "Displays a red detention message centered on the screen with remaining seconds when in detention.");
-            BouncyYTPDisplay = Config.Bind("Visuals", "BouncyYTPDisplay", true, "Makes the points addition text bounce/animate when scoring points.");
-            MapTileFade = Config.Bind("Visuals", "MapTileFade", true, "Fades tiles on the map in/out when they become visible/invisible.");
-            StaminaOnPoints = Config.Bind("Stamina", "StaminaOnPoints", true, "Restores stamina when earning points.");
-            EnableBaldiQuarterReward = Config.Bind("Gameplay", "EnableBaldiQuarterReward", false, "Baldi praise and give a Quarter after completing an activity (like classic versions)");
+            TechnoBootsAnimation = Config.Bind("Hud", "TechnoBootsAnimation", true, "Enables the Techno Boots HUD sprite animation.");
+            EnableNametagHudAnimation = Config.Bind("Hud", "EnableNametagHudAnimation", true, "Displays and animates the nametag sprites at the bottom center of the screen when active.");
+            EnableDetentionMessage = Config.Bind("Hud", "EnableDetentionMessage", true, "Displays a red detention message centered on the screen with remaining seconds when in detention.");
+            BouncyYTPDisplay = Config.Bind("YTPs", "BouncyYTPDisplay", true, "Makes the points addition text bounce/animate when scoring points.");
+            MapTileFade = Config.Bind("Hud", "MapTileFade", true, "Fades tiles on the map in/out when they become visible/invisible.");
+            StaminaOnPoints = Config.Bind("Staminometer", "StaminaOnPoints", true, "Restores stamina when earning points.");
+            EnableBaldiQuarterReward = Config.Bind("NPCs", "EnableBaldiQuarterReward", false, "Baldi praise and give a Quarter after completing an activity (like classic versions)");
 
-            RandomJumpsEnabled = Config.Bind("Gameplay", "RandomJumpsEnabled", false, "Enables a random jump count in the Playtime minigame.");
-            MinJumps = Config.Bind("Gameplay", "MinJumps", 3, "Minimum number of jumps required.");
-            MaxJumps = Config.Bind("Gameplay", "MaxJumps", 10, "Maximum number of jumps required.");
-            FasterJumpropeEnabled = Config.Bind("Gameplay", "FasterJumpropeEnabled", false, "Makes jumprope 1.5x faster.");
-            BaldiKillsNPCs = Config.Bind("Gameplay", "BaldiKillsNPCs", false, "Baldi can kill other NPCs when touching them.");
+            RandomJumpsEnabled = Config.Bind("NPCs", "RandomJumpsEnabled", false, "Enables a random jump count in the Playtime minigame.");
+            MinJumps = Config.Bind("NPCs", "MinJumps", 3, "Minimum number of jumps required.");
+            MaxJumps = Config.Bind("NPCs", "MaxJumps", 10, "Maximum number of jumps required.");
+            FasterJumpropeEnabled = Config.Bind("NPCs", "FasterJumpropeEnabled", false, "Makes jumprope 1.5x faster.");
+            BaldiKillsNPCs = Config.Bind("NPCs", "BaldiKillsNPCs", false, "Baldi can kill other NPCs when touching them.");
             FinalLevelPreEndingEnabled = Config.Bind("Gameplay", "FinalLevelPreEndingEnabled", true, "On the final level, when breaking the second-to-last elevator, despawn other NPCs and make Baldi accelerate faster over time.");
-            AlwaysClosedValves = Config.Bind("Gameplay", "AlwaysClosedValves", true, "Steam valves always start closed.");
-            LockdownDoorSpeedMultiplier = Config.Bind("Gameplay", "LockdownDoorSpeedMultiplier", 1f, "Multiplier for lockdown door movement speed (default is 1).");
-            EnableBaldiPushBack = Config.Bind("Gameplay", "EnableBaldiPushBack", true, "Pushes Baldi back when he catches you.");
-            BaldiPushForce = Config.Bind("Gameplay", "BaldiPushForce", 20f, "Force of the push.");
-            BaldiPushCooldown = Config.Bind("Gameplay", "BaldiPushCooldown", 1.5f, "Cooldown duration between pushes.");
-            BaldiMaxPushes = Config.Bind("Gameplay", "BaldiMaxPushes", 3, "Maximum number of pushes before Baldi catches you.");
-            EnableOldTestBehavior = Config.Bind("Gameplay", "EnableOldTestBehavior", true, "Enables old behavior for The Test.");
-            EnableNewTestFeatures = Config.Bind("Gameplay", "EnableNewTestFeatures", false, "Uses new test features (head bobbing, speed scaling).");
-            OldTestTimeStop = Config.Bind("Gameplay", "OldTestTimeStop", true, "Stops or slows down time when looking at The Test.");
-            OldTestFastForward = Config.Bind("Gameplay", "OldTestFastForward", false, "Fast-forwards time while looking at The Test.");
-            OldTestDisappear = Config.Bind("Gameplay", "OldTestDisappear", false, "The Test disappears when not in sight.");
-            OldTestMovingItems = Config.Bind("Gameplay", "OldTestMovingItems", true, "Items and entities can move while looking at The Test.");
-            EnableMrsPompTimeControl = Config.Bind("Gameplay", "EnableMrsPompTimeControl", true, "Overrides Mrs. Pomp's class arrival time.");
-            MrsPompClassTime = Config.Bind("Gameplay", "MrsPompClassTime", 300f, "Fixed class time in seconds (default 300 = 5 minutes).");
-            MrsPompRandomizeTime = Config.Bind("Gameplay", "MrsPompRandomizeTime", true, "Randomizes class time between the minimum and maximum limits.");
-            MrsPompMinTime = Config.Bind("Gameplay", "MrsPompMinTime", 60f, "Minimum random class time in seconds (default 60 = 1 minute).");
-            MrsPompMaxTime = Config.Bind("Gameplay", "MrsPompMaxTime", 540f, "Maximum random class time in seconds (default 540 = 9 minutes).");
-            EnableYTPSMultiplier = Config.Bind("Gameplay", "EnableYTPSMultiplier", false, "Multiplies points gained from the YTPS item.");
-            YTPSMultiplier = Config.Bind("Gameplay", "YTPSMultiplier", 3, "Multiplier for YTPS points (default 3).");
-            EnableCampingItemLimit = Config.Bind("Gameplay", "EnableCampingItemLimit", true, "Overrides the maximum pickup limit during camping (set to a large number to disable the limit).");
-            CampingItemPickupLimit = Config.Bind("Gameplay", "CampingItemPickupLimit", 999f, "Maximum items you can collect during camping before others disappear.");
-            EnableJohnnyBringCount = Config.Bind("Gameplay", "EnableJohnnyBringCount", true, "Overrides how many items Johnny brings to the lobby.");
-            JohnnyBringItemCount = Config.Bind("Gameplay", "JohnnyBringItemCount", 999, "Number of items Johnny brings (default 3).");
-            DisableBananasInCafeteria = Config.Bind("Gameplay", "DisableBananasInCafeteria", true, "Removes banana peels from the cafeteria.");
+            AlwaysClosedValves = Config.Bind("Structures", "AlwaysClosedValves", true, "Steam valves always start closed.");
+            LockdownDoorSpeedMultiplier = Config.Bind("Structures", "LockdownDoorSpeedMultiplier", 1f, "Multiplier for lockdown door movement speed (default is 1).");
+            EnableBaldiPushBack = Config.Bind("NPCs", "EnableBaldiPushBack", true, "Pushes Baldi back when he catches you.");
+            BaldiPushForce = Config.Bind("NPCs", "BaldiPushForce", 20f, "Force of the push.");
+            BaldiPushCooldown = Config.Bind("NPCs", "BaldiPushCooldown", 1.5f, "Cooldown duration between pushes.");
+            BaldiMaxPushes = Config.Bind("NPCs", "BaldiMaxPushes", 3, "Maximum number of pushes before Baldi catches you.");
+            EnableOldTestBehavior = Config.Bind("NPCs", "EnableOldTestBehavior", true, "Enables old behavior for The Test.");
+            EnableNewTestFeatures = Config.Bind("NPCs", "EnableNewTestFeatures", false, "Uses new test features (head bobbing, speed scaling).");
+            OldTestTimeStop = Config.Bind("NPCs", "OldTestTimeStop", true, "Stops or slows down time when looking at The Test.");
+            OldTestFastForward = Config.Bind("NPCs", "OldTestFastForward", false, "Fast-forwards time while looking at The Test.");
+            OldTestDisappear = Config.Bind("NPCs", "OldTestDisappear", false, "The Test disappears when not in sight.");
+            OldTestMovingItems = Config.Bind("NPCs", "OldTestMovingItems", true, "Items and entities can move while looking at The Test.");
+            EnableMrsPompTimeControl = Config.Bind("NPCs", "EnableMrsPompTimeControl", true, "Overrides Mrs. Pomp's class arrival time.");
+            MrsPompClassTime = Config.Bind("NPCs", "MrsPompClassTime", 300f, "Fixed class time in seconds (default 300 = 5 minutes).");
+            MrsPompRandomizeTime = Config.Bind("NPCs", "MrsPompRandomizeTime", true, "Randomizes class time between the minimum and maximum limits.");
+            MrsPompMinTime = Config.Bind("NPCs", "MrsPompMinTime", 60f, "Minimum random class time in seconds (default 60 = 1 minute).");
+            MrsPompMaxTime = Config.Bind("NPCs", "MrsPompMaxTime", 540f, "Maximum random class time in seconds (default 540 = 9 minutes).");
+            EnableYTPSMultiplier = Config.Bind("YTPs", "EnableYTPSMultiplier", false, "Multiplies points gained from the YTPS item.");
+            YTPSMultiplier = Config.Bind("YTPs", "YTPSMultiplier", 3, "Multiplier for YTPS points (default 3).");
+            EnableCampingItemLimit = Config.Bind("Items", "EnableCampingItemLimit", true, "Overrides the maximum pickup limit during camping (set to a large number to disable the limit).");
+            CampingItemPickupLimit = Config.Bind("Items", "CampingItemPickupLimit", 999f, "Maximum items you can collect during camping before others disappear.");
+            EnableJohnnyBringCount = Config.Bind("Items", "EnableJohnnyBringCount", true, "Overrides how many items Johnny brings to the lobby.");
+            JohnnyBringItemCount = Config.Bind("Items", "JohnnyBringItemCount", 999, "Number of items Johnny brings (default 3).");
+            DisableBananasInCafeteria = Config.Bind("Structures", "DisableBananasInCafeteria", true, "Removes banana peels from the cafeteria.");
 
-            EnableMathMachineMultiplication = Config.Bind("MathMachine", "EnableMultiplication", true, "Allows multiplication problems on math machines.");
-            EnableMathMachineDivision = Config.Bind("MathMachine", "EnableDivision", true, "Allows division problems on math machines.");
-            EnableMathMachineExponent = Config.Bind("MathMachine", "EnableExponent", true, "Allows exponentiation problems on math machines.");
-            ReplaceMathMachineCompletely = Config.Bind("MathMachine", "ReplaceCompletely", false, "Replaces all problems with multiplication, division, or exponentiation (if true, removes addition and subtraction).");
-            EnableQuarterSpawning = Config.Bind("Gameplay", "EnableQuarterSpawning", false, "Allow quarters to spawn randomly in hallways like classic versions.");
-            QuarterSpawnChance = Config.Bind("Gameplay", "QuarterSpawnChance", 0.1f, "Chance (0-1) for each hallway tile to spawn a quarter.");
-            QuarterMaxPerFloor = Config.Bind("Gameplay", "QuarterMaxPerFloor", 5, "Maximum quarters that can spawn per floor.");
-            DisableGaugeVisuals = Config.Bind("Visuals", "DisableGaugeVisuals", false, "Hides the gauges.");
-            EnableScissorsCutRuler = Config.Bind("Gameplay", "EnableScissorsCutRuler", false, "Scissors can cut Baldi's ruler for 15 seconds.");
+            EnableMathMachineMultiplication = Config.Bind("Activities", "EnableMultiplication", true, "Allows multiplication problems on math machines.");
+            EnableMathMachineDivision = Config.Bind("Activities", "EnableDivision", true, "Allows division problems on math machines.");
+            EnableMathMachineExponent = Config.Bind("Activities", "EnableExponent", true, "Allows exponentiation problems on math machines.");
+            ReplaceMathMachineCompletely = Config.Bind("Activities", "ReplaceCompletely", false, "Replaces all problems with multiplication, division, or exponentiation (if true, removes addition and subtraction).");
+            EnableQuarterSpawning = Config.Bind("Items", "EnableQuarterSpawning", false, "Allow quarters to spawn randomly in hallways like classic versions.");
+            QuarterSpawnChance = Config.Bind("Items", "QuarterSpawnChance", 0.1f, "Chance (0-1) for each hallway tile to spawn a quarter.");
+            QuarterMaxPerFloor = Config.Bind("Items", "QuarterMaxPerFloor", 5, "Maximum quarters that can spawn per floor.");
+            DisableGaugeVisuals = Config.Bind("Hud", "DisableGaugeVisuals", false, "Hides the gauges.");
+            EnableScissorsCutRuler = Config.Bind("Items", "EnableScissorsCutRuler", false, "Scissors can cut Baldi's ruler for 15 seconds.");
             ZeroStaminaEnabled = Config.Bind("FunSettings", "ZeroStamina", false, "Stamina is always 0 and cannot be restored.");
-            EnableMatchMachineGhosting = Config.Bind("Visuals", "EnableMatchMachineGhosting", false, "Make Match Mathines easier.");
-            DisableStudentSpawns = Config.Bind("Gameplay", "DisableStudentSpawns", false, "Remove students from spawning and gives 25 ytps per student as compensation.");
+            EnableMatchMachineGhosting = Config.Bind("Activities", "EnableMatchMachineGhosting", false, "Make Match Mathines easier.");
+            DisableStudentSpawns = Config.Bind("Structures", "DisableStudentSpawns", false, "Remove students from spawning and gives 25 ytps per student as compensation.");
             EnableTapePlayerReturnSprite = Config.Bind("Visuals", "EnableTapePlayerReturnSprite", true, "Return TapePlayer sprite to TapePlayerOpen after audio finishes.");
-            EnableQuitCursorHide = Config.Bind("Visuals", "EnableQuitCursorHide", true, "Hide cursor when pressing Quit in main menu.");
+            EnableQuitCursorHide = Config.Bind("MainMenu", "EnableQuitCursorHide", true, "Hide cursor when pressing Quit in main menu.");
             StartSpoopModeOnNotebooks = Config.Bind("Gameplay", "StartSpoopModeOnNotebooks", false, "Start spoop mode when the player collects two notebooks.");
             DoubleStorePrices = Config.Bind("FunSettings", "DoubleStorePrices", false, "Double the prices of all items in the store.");
+            KeepPointsDisplayAlwaysVisible = Config.Bind("Hud", "KeepPointsDisplayAlwaysVisible", true, "Points display (score counter) always stays visible and doesn't slide down.");
+            EnableDrinkingPenalty = Config.Bind("Detention", "EnableDrinkingPenalty", true, "Drinking from water fountain gives detention");
+            EnableAllTestMaps = Config.Bind("MainMenu", "EnableAllTestMaps", true, "Show test map buttons in main menu");
+            EnableScissorsBullying = Config.Bind("Detention", "EnableScissorsBullying", true, "Using scissors (except on gum) counts as bullying");
+            EnableElevatorStaminaRestore = Config.Bind("Staminometer", "EnableElevatorStaminaRestore", true, "Restore full stamina when collect elevator");
+            EnableDrReflexLeavePenalty = Config.Bind("Detention", "EnableDrReflexLeavePenalty", true, "Principal gives detention for leaving Dr. Reflex's test.");
+            EnableBaldiSafeRoomTeleport = Config.Bind("NPCs", "EnableBaldiSafeRoomTeleport", true, "Baldi teleports player to Safe Room instead of killing");
+            BaldiSafeRoomTeleportCount = Config.Bind("NPCs", "BaldiSafeRoomTeleportCount", 1, "Number of times Baldi will teleport player to Safe Room before killing");
+            EnableItemNameSuffix = Config.Bind("Hud", "EnableItemNameSuffix", true, "Add ':3' in items name (like Andrew Methhouse Reworked)");
+            EnableUnlimitedMapZoom = Config.Bind("Hud", "EnableUnlimitedMapZoom", true, "Remove map zoom limits and set zoom speed");
+            EnablePrincipalSpawnChance = Config.Bind("NPCs", "EnablePrincipalSpawnChance", true, "Enable chance for Principal to not spawn");
+            PrincipalSpawnChance = Config.Bind("NPCs", "PrincipalSpawnChance", 0.5f, "Chance (0-1) that Principal will not spawn (0 = always spawn, 1 = never spawn)");
+            EnableBootsIgnoreGum = Config.Bind("Items", "EnableBootsIgnoreGum", true, "Boots prevent slowdown from gum");
 
 
             Harmony.CreateAndPatchAll(typeof(PatchedAndLatchedPlugin));
@@ -293,9 +315,6 @@ namespace PatchedAndLatched
             if (NoTransparentMap.Value)
                 Harmony.CreateAndPatchAll(typeof(NoTransparentMapPatch));
 
-            if (BootsSnapRope.Value)
-                Harmony.CreateAndPatchAll(typeof(BootsSnapRopePatch));
-
             if (BootsClassicDuration.Value)
                 Harmony.CreateAndPatchAll(typeof(BootsClassicDurationPatch));
 
@@ -324,15 +343,6 @@ namespace PatchedAndLatched
 
             if (GrapplingHookPushNPCs.Value)
                 Harmony.CreateAndPatchAll(typeof(GrapplingHookNPCPushPatch));
-
-            if (EnableSeedLetters.Value)
-            {
-                Harmony.CreateAndPatchAll(typeof(SeedInputPatch));
-                Harmony.CreateAndPatchAll(typeof(ElevatorScreenSeedPatch));
-                Harmony.CreateAndPatchAll(typeof(UseSeedPatch));
-                Harmony.CreateAndPatchAll(typeof(PauseMenuSeedPatch));
-                Harmony.CreateAndPatchAll(typeof(FixSaves));
-            }
 
             if (FirstPrizeBreakByBSODA.Value)
                 Harmony.CreateAndPatchAll(typeof(BSODABreakFirstPrizePatch));
@@ -365,7 +375,11 @@ namespace PatchedAndLatched
                 Harmony.CreateAndPatchAll(typeof(BaldiKillsNPCsPatch));
 
             if (FinalLevelPreEndingEnabled.Value)
+            {
                 Harmony.CreateAndPatchAll(typeof(FinalLevelPreEndingPatch));
+                Harmony.CreateAndPatchAll(typeof(ChalkboardExitFix));
+                Harmony.CreateAndPatchAll(typeof(ChalkboardEnterFix));
+            }
 
             if (AlwaysClosedValves.Value)
                 Harmony.CreateAndPatchAll(typeof(AlwaysClosedValvesPatch));
@@ -375,6 +389,9 @@ namespace PatchedAndLatched
 
             if (EnableBaldiPushBack.Value)
                 Harmony.CreateAndPatchAll(typeof(BaldiPushPatch));
+
+            if (KeepPointsDisplayAlwaysVisible.Value)
+                Harmony.CreateAndPatchAll(typeof(KeepPointsDisplayPatch));
 
             if (EnableOldTestBehavior.Value)
             {
@@ -486,6 +503,39 @@ namespace PatchedAndLatched
 
             if (DoubleStorePrices.Value)
                 Harmony.CreateAndPatchAll(typeof(DoubleStorePricesPatch));
+
+            if (EnableDrinkingPenalty.Value)
+                Harmony.CreateAndPatchAll(typeof(DrinkingPenaltyPatch));
+
+            if (EnableAllTestMaps.Value)
+                Harmony.CreateAndPatchAll(typeof(MainMenuTestMapsPatch));
+
+            if (EnableScissorsBullying.Value)
+                Harmony.CreateAndPatchAll(typeof(ScissorsBullyingPatch));
+
+            if (EnableElevatorStaminaRestore.Value)
+                Harmony.CreateAndPatchAll(typeof(ElevatorStaminaRestorePatch));
+
+            if (EnableDrReflexLeavePenalty.Value)
+                Harmony.CreateAndPatchAll(typeof(DrReflexLeavePenaltyPatch));
+
+            if (EnableBaldiSafeRoomTeleport.Value)
+                Harmony.CreateAndPatchAll(typeof(BaldiSafeRoomTeleportPatch));
+
+            if (EnableItemNameSuffix.Value)
+                Harmony.CreateAndPatchAll(typeof(ItemNameSuffixPatch));
+
+            if (EnableUnlimitedMapZoom.Value)
+                Harmony.CreateAndPatchAll(typeof(MapZoomPatch));
+
+            if (EnablePrincipalSpawnChance.Value)
+                Harmony.CreateAndPatchAll(typeof(PrincipalSpawnPatch));
+
+            if (EnableBootsIgnoreGum.Value)
+            {
+                Harmony.CreateAndPatchAll(typeof(GumBootsPatch));
+                Harmony.CreateAndPatchAll(typeof(EntitySetResistAddendPatch));
+            }
         }
 
         [HarmonyPatch(typeof(NameManager), "Awake")]
