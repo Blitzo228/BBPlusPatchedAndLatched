@@ -60,7 +60,6 @@ namespace PatchedAndLatched
         public static ConfigEntry<int>? MinJumps;
         public static ConfigEntry<int>? MaxJumps;
         public static ConfigEntry<bool>? FasterJumpropeEnabled;
-        public static ConfigEntry<bool>? BaldiKillsNPCs;
         public static ConfigEntry<bool>? FinalLevelPreEndingEnabled;
         public static ConfigEntry<bool>? AlwaysClosedValves;
         public static ConfigEntry<float>? LockdownDoorSpeedMultiplier;
@@ -138,7 +137,10 @@ namespace PatchedAndLatched
         public static ConfigEntry<float>? PrincipalSpawnChance;
         public static ConfigEntry<bool>? EnableBootsIgnoreGum;
         public static ConfigEntry<bool>? EnableOldCafeteriaCeiling;
+        public static ConfigEntry<bool>? EnableDopplerEffect;
         public static ConfigEntry<bool>? EnableStaminaHideOnComplete;
+        public static ConfigEntry<bool>? EnableIncorrectActivityPraise;
+
 
 
         private void Awake()
@@ -205,7 +207,6 @@ namespace PatchedAndLatched
             MinJumps = Config.Bind("NPCs", "MinJumps", 3, "Minimum number of jumps required.");
             MaxJumps = Config.Bind("NPCs", "MaxJumps", 10, "Maximum number of jumps required.");
             FasterJumpropeEnabled = Config.Bind("NPCs", "FasterJumpropeEnabled", false, "Makes jumprope 1.5x faster.");
-            BaldiKillsNPCs = Config.Bind("NPCs", "BaldiKillsNPCs", false, "Baldi can kill other NPCs when touching them.");
             FinalLevelPreEndingEnabled = Config.Bind("Gameplay", "FinalLevelPreEndingEnabled", true, "On the final level, when breaking the second-to-last elevator, despawn other NPCs and make Baldi accelerate faster over time.");
             AlwaysClosedValves = Config.Bind("Structures", "AlwaysClosedValves", true, "Steam valves always start closed.");
             LockdownDoorSpeedMultiplier = Config.Bind("Structures", "LockdownDoorSpeedMultiplier", 1f, "Multiplier for lockdown door movement speed (default is 1).");
@@ -263,6 +264,8 @@ namespace PatchedAndLatched
             EnableBootsIgnoreGum = Config.Bind("Items", "EnableBootsIgnoreGum", true, "Boots blocks slowdown from gum");
             EnableOldCafeteriaCeiling = Config.Bind("Rooms", "EnableOldCafeteriaCeiling", false, "Restore old cafeteria ceiling prior 0.14");
             EnableStaminaHideOnComplete = Config.Bind("Hud", "EnableStaminaHideOnComplete", true, "Hide stamina meter after all notebooks are collected");
+            EnableDopplerEffect = Config.Bind("Audio", "EnableDopplerEffect", true, "Apply Doppler effect like older versions");
+            EnableIncorrectActivityPraise = Config.Bind("Activities", "EnableIncorrectActivityPraise", true, "Baldi praises you for 1 second when you fail an activity");
 
 
             Harmony.CreateAndPatchAll(typeof(PatchedAndLatchedPlugin));
@@ -375,9 +378,6 @@ namespace PatchedAndLatched
 
             if (FasterJumpropeEnabled.Value)
                 Harmony.CreateAndPatchAll(typeof(FasterJumpropePatch));
-
-            if (BaldiKillsNPCs.Value)
-                Harmony.CreateAndPatchAll(typeof(BaldiKillsNPCsPatch));
 
             if (FinalLevelPreEndingEnabled.Value)
             {
@@ -552,6 +552,12 @@ namespace PatchedAndLatched
 
             if (EnableStaminaHideOnComplete.Value)
                 Harmony.CreateAndPatchAll(typeof(StaminaHideOnCompletePatch));
+
+            if (EnableDopplerEffect.Value)
+                Harmony.CreateAndPatchAll(typeof(DopplerEffectPatch));
+
+            if (EnableIncorrectActivityPraise.Value)
+                Harmony.CreateAndPatchAll(typeof(IncorrectActivityPraisePatch));
         }
 
         [HarmonyPatch(typeof(NameManager), "Awake")]
@@ -580,4 +586,3 @@ namespace PatchedAndLatched
         }
     }
 }
-

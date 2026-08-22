@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +28,6 @@ namespace PatchedAndLatched.Patches
 
         internal static void PatchRoomAssets()
         {
-            if (!PatchedAndLatchedPlugin.EnableOldCafeteriaCeiling.Value) return;
 
             EnsureAssetsResolved();
             if (_assetsPatched) return;
@@ -57,7 +55,6 @@ namespace PatchedAndLatched.Patches
 
         internal static void FixLoadedRoom(RoomController room)
         {
-            if (!PatchedAndLatchedPlugin.EnableOldCafeteriaCeiling.Value) return;
             if (!IsCafeteriaRoom(room)) return;
 
             EnsureAssetsResolved();
@@ -213,7 +210,6 @@ namespace PatchedAndLatched.Patches
     {
         private static void Postfix(RoomFunctionContainer __instance)
         {
-            if (PatchedAndLatchedPlugin.EnableOldCafeteriaCeiling.Value)
             {
                 var room = __instance.GetComponentInParent<RoomController>();
                 if (room != null)

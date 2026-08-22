@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PatchedAndLatched;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches

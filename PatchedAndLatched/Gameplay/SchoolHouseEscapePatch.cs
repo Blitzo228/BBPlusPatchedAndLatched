@@ -1,4 +1,5 @@
 using HarmonyLib;
+using UnityEngine;
 
 namespace PatchedAndLatched.Patches
 {
@@ -12,10 +13,10 @@ namespace PatchedAndLatched.Patches
         public static void AllNotebooks_Postfix(BaseGameManager __instance)
         {
             if (_escapePlayed) return;
-
             if (__instance.InPitstop()) return;
 
-            Singleton<MusicManager>.Instance.PlayMidi("Level_1_End", loop: true);
+            string midiName = (Random.value < 0.1f) ? "CampMinigame_1_1" : "Level_1_End";
+            Singleton<MusicManager>.Instance.PlayMidi(midiName, loop: true);
             _escapePlayed = true;
         }
 

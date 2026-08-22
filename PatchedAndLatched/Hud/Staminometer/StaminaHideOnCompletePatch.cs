@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using PatchedAndLatched;
+using System.Collections;
 using UnityEngine;
 
 namespace PatchedAndLatched.Patches
@@ -8,9 +9,10 @@ namespace PatchedAndLatched.Patches
     internal static class StaminaHideOnCompletePatch
     {
         private static GameObject? _staminometerObject;
-        private static bool _saved = false;
+        private static CanvasGroup? _canvasGroup;
+        private static Coroutine? _fadeCoroutine;
 
-        private static GameObject GetStaminometer()
+        private static GameObject? GetStaminometer()
         {
             if (_staminometerObject != null)
                 return _staminometerObject;
@@ -26,7 +28,10 @@ namespace PatchedAndLatched.Patches
                 if (child.name == "Staminometer")
                 {
                     _staminometerObject = child.gameObject;
-                    _saved = true;
+                    _canvasGroup = _staminometerObject.GetComponent<CanvasGroup>();
+                    if (_canvasGroup == null)
+                        _canvasGroup = _staminometerObject.AddComponent<CanvasGroup>();
+                    _canvasGroup.alpha = 1f;
                     return _staminometerObject;
                 }
             }
@@ -45,6 +50,13 @@ namespace PatchedAndLatched.Patches
 
             if (!staminometer.activeSelf)
                 staminometer.SetActive(true);
+
+            if (_canvasGroup != null)
+                _canvasGroup.alpha = 1f;
+
+            if (_fadeCoroutine != null && __instance != null)
+                __instance.StopCoroutine(_fadeCoroutine);
+            _fadeCoroutine = null;
         }
 
         [HarmonyPatch(typeof(BaseGameManager), "AllNotebooks")]
@@ -57,7 +69,33 @@ namespace PatchedAndLatched.Patches
             var staminometer = GetStaminometer();
             if (staminometer == null) return;
 
-            staminometer.SetActive(false);
+            if (_fadeCoroutine != null)
+                __instance.StopCoroutine(_fadeCoroutine);
+
+            _fadeCoroutine = __instance.StartCoroutine(FadeOutStaminometer());
+        }
+
+        private static IEnumerator FadeOutStaminometer()
+        {
+            if (_canvasGroup == null) yield break;
+
+            float duration = 1f;
+            float elapsed = 0f;
+            float startAlpha = _canvasGroup.alpha;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / duration;
+                _canvasGroup.alpha = Mathf.Lerp(startAlpha, 0f, t);
+                yield return null;
+            }
+
+            _canvasGroup.alpha = 0f;
+            if (_staminometerObject != null)
+                _staminometerObject.SetActive(false);
+
+            _fadeCoroutine = null;
         }
     }
 }
